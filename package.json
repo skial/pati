@@ -1,0 +1,33 @@
+{
+  "name": "pati",
+  "version": "0.0.0",
+  "description": "> Haitian Creole for Part",
+  "main": "index.js",
+  "bin": {
+    "pati": "spec.js"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://skial@bitbucket.org/skial/pati.git"
+  },
+  "keywords": [
+    "html",
+    "html5",
+    "custom",
+    "elements",
+    "components",
+    "templates"
+  ],
+  "author": "Skial Bainn",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/skial/pati#readme",
+  "dependencies": {
+    "electron": "^1.4.14"
+  }
+}

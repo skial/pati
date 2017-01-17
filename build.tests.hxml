@@ -1,0 +1,14 @@
+-cp src
+-cp tests
+
+-lib utest
+-lib regle
+-lib electron
+
+-main Main
+
+#-dce full
+
+--each
+
+-js bin/spec.js
