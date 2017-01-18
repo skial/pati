@@ -16,6 +16,7 @@ package uhx.pati;
 }
 
 @:enum @:forward abstract EventConsts(String) from String to String {
+	var DOMContentLoaded = 'DOMContentLoaded';
 	var ChildAdded = 'Pati_ChildAdded';
 	var Completed = 'Pati_ElementCompleted';
 }

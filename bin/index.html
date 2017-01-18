@@ -1,8 +1,11 @@
 <html>
 <head>
-	<link href="bubbling.html" type="import"  />
-	<link href="capturing.html" type="import"  />
-	<script src="controller.spec.js"></script>
+	<script>
+	var specValues = [1, 2, 3, 4, 5];
+	</script>
+	<link href="bubbling.html" rel="import"  />
+	<link href="capturing.html" rel="import"  />
+	<script src="spec.js"></script>
 </head>
 <body>
 	<h1>Pati Component Tests</h1>
@@ -13,11 +16,33 @@
 	</blockquote>
 	<section>
 		<h2>Bubbling Phase</h2>
-		
+		<p>Expected: 5 4 3 2 1</p>
+		<p>Outcome: 
+			<spec-bubbling>
+				<spec-bubbling>
+					<spec-bubbling>
+						<spec-bubbling>
+							<spec-bubbling></spec-bubbling>
+						</spec-bubbling>
+					</spec-bubbling>
+				</spec-bubbling>
+			</spec-bubbling>
+		</p>
 	</section>
 	<section>
 		<h2>Capturing Phase</h2>
-		
+		<p>Expected: 1 2 3 4 5</p>
+		<p>Outcome: 
+			<spec-capturing>
+				<spec-capturing>
+					<spec-capturing>
+						<spec-capturing>
+							<spec-capturing></spec-capturing>
+						</spec-capturing>
+					</spec-capturing>
+				</spec-capturing>
+			</spec-capturing>
+		</p>
 	</section>
 </body>
 </html>

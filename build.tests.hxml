@@ -3,12 +3,22 @@
 
 -lib utest
 -lib regle
--lib electron
+#-lib electron
 
--main Main
-
+-debug
 #-dce full
 
 --each
 
+-main Main
 -js bin/spec.js
+
+--next
+
+-main uhx.pati.Bubbling
+-js bin/bubbling.spec.js
+
+--next
+
+-main uhx.pati.Capturing
+-js bin/capturing.spec.js
