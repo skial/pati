@@ -9,10 +9,6 @@ import uhx.pati.TemplateElement;
 class Main {
 	
 	public static function main() {
-		window.document.addEventListener('DOMContentLoaded', function(e) {
-			
-			
-		});
 		
 	}
 	

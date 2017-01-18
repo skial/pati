@@ -147,7 +147,7 @@ class Component extends uhx.pati.TemplateElement {
 	}
 	
 	private function get_events():Map<String, EventListener> {
-		return [ChildAdded => onCustomChildAdded, Completed => { method:phase == Bubbling? onCustomChildFinished : onCustomParentFinished, capture:phase/*, once:true*/ }];
+		return [ChildAdded => onCustomChildAdded, Completed => { method:phase == Bubbling? onCustomChildFinished : onCustomParentFinished, capture:phase }];
 	}
 	
 }
