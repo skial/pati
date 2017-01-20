@@ -22,3 +22,13 @@
 
 -main uhx.pati.Capturing
 -js bin/capturing.spec.js
+
+--next
+
+-main uhx.pati.ConvertTag
+-js bin/convert.tag.js
+
+--next
+
+-main uhx.pati.JsonData
+-js bin/json.data.js

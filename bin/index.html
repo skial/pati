@@ -2,10 +2,44 @@
 <head>
 	<script>
 	var specValues = [1, 2, 3, 4, 5];
+	var json_data = {
+		"single":{
+			"value":"world"
+		},
+		"deep":{
+			"a":{
+				"next":"b",
+				"b":{
+					"next":"c",
+					"c":"123"
+				}
+			}
+		},
+		"collection":[
+			"a1", "a2", "b1", "b2", "c1", "c2"
+		],
+		"people":[
+			{"name":"foo", "age":1},
+			{"name":"bar", "age":2}
+		],
+		"round":{
+			"about":{
+				"selector":".people"
+			}
+		},
+		"a1": "foo a1",
+		"a2": "foo a2",
+		"b1": "foo b1",
+		"b2": "foo b2",
+		"c1": "foo c1",
+		"c2": "foo c2"
+	}
 	</script>
+	<script src="spec.js"></script>
 	<link href="bubbling.html" rel="import"  />
 	<link href="capturing.html" rel="import"  />
-	<script src="spec.js"></script>
+	<link href="convert.tag.html" rel="import"  />
+	<link href="json.data.html" rel="import"  />
 </head>
 <body>
 	<h1>Pati Component Tests</h1>
@@ -16,33 +50,75 @@
 	</blockquote>
 	<section>
 		<h2>Bubbling Phase</h2>
-		<p>Expected: 5 4 3 2 1</p>
-		<p>Outcome: 
-			<spec-bubbling>
+		<div class="expected">
+			<p>Expected: 5 4 3 2 1</p>
+		</div>
+		<div class="outcome">
+			<p>Outcome: 
 				<spec-bubbling>
 					<spec-bubbling>
 						<spec-bubbling>
-							<spec-bubbling></spec-bubbling>
+							<spec-bubbling>
+								<spec-bubbling></spec-bubbling>
+							</spec-bubbling>
 						</spec-bubbling>
 					</spec-bubbling>
 				</spec-bubbling>
-			</spec-bubbling>
-		</p>
+			</p>
+		</div>
 	</section>
 	<section>
 		<h2>Capturing Phase</h2>
-		<p>Expected: 1 2 3 4 5</p>
-		<p>Outcome: 
-			<spec-capturing>
+		<div class="expected">
+			<p>Expected: 1 2 3 4 5</p>
+		</div>
+		<div class="outcome">
+			<p>Outcome: 
 				<spec-capturing>
 					<spec-capturing>
 						<spec-capturing>
-							<spec-capturing></spec-capturing>
+							<spec-capturing>
+								<spec-capturing></spec-capturing>
+							</spec-capturing>
 						</spec-capturing>
 					</spec-capturing>
 				</spec-capturing>
-			</spec-capturing>
-		</p>
+			</p>
+		</div>
+	</section>
+	<section>
+		<h2>Convert Tag</h2>
+		<div class="expected">
+			<p class="silly">A silly example.</p>
+			<ul class="silly bunch">
+				<li>
+					<p>Silly One</p>
+				</li>
+				<li>
+					<p>Silly Two</p>
+				</li>
+			</ul>
+		</div>
+		<div class="outcome">
+			<convert-tag to:p class="silly">A silly example.</convert-tag>
+			<convert-tag to:ul class="silly bunch">
+				<convert-tag to:li>
+					<convert-tag to:p>Silly One</convert-tag>
+				</convert-tag>
+				<convert-tag to:li>
+					<convert-tag to:p>Silly Two</convert-tag>
+				</convert-tag>
+			</convert-tag>
+		</div>
+	</section>
+	<section>
+		<h2>Json Data</h2>
+		<div class="expected">
+			
+		</div>
+		<div class="outcome">
+			<json-data select=""></json-data>
+		</div>
 	</section>
 </body>
 </html>

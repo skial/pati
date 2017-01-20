@@ -9,6 +9,7 @@ package uhx.pati;
 	var UID = 'uid';
 	var Name = 'data-name';
 	var Prefix = 'data-prefix';
+	var To = 'to:';
 }
 
 @:enum @:forward abstract StorageConsts(String) from String to String {
@@ -16,7 +17,7 @@ package uhx.pati;
 }
 
 @:enum @:forward abstract EventConsts(String) from String to String {
-	var DOMContentLoaded = 'DOMContentLoaded';
 	var ChildAdded = 'Pati_ChildAdded';
 	var Completed = 'Pati_ElementCompleted';
+	var JsonDataRecieved = 'Pati_JsonDataRecieved';
 }
