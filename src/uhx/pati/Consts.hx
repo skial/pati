@@ -10,6 +10,7 @@ package uhx.pati;
 	var Name = 'data-name';
 	var Prefix = 'data-prefix';
 	var To = 'to:';
+	var Select = 'select';
 }
 
 @:enum @:forward abstract StorageConsts(String) from String to String {
@@ -20,4 +21,10 @@ package uhx.pati;
 	var ChildAdded = 'Pati_ChildAdded';
 	var Completed = 'Pati_ElementCompleted';
 	var JsonDataRecieved = 'Pati_JsonDataRecieved';
+}
+
+typedef PhantomAttr = PhantomAttributes;
+
+@:enum @:forward abstract PhantomAttributes(String) from String to String {
+	var To = ':to';
 }

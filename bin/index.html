@@ -114,10 +114,19 @@
 	<section>
 		<h2>Json Data</h2>
 		<div class="expected">
-			
+			<div>
+				hello
+				world
+			</div>
 		</div>
 		<div class="outcome">
-			<json-data select=""></json-data>
+			<div>
+				hello
+				<json-data select=".single .value"></json-data>
+			</div>
+			<json-data select=".single .value" to:p>
+				<span :to="hello {*}"></span>
+			</json-data>
 		</div>
 	</section>
 </body>

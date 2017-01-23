@@ -3,7 +3,9 @@
 
 -lib utest
 -lib regle
+-lib jwenn
 #-lib electron
+-lib tink_core
 
 -debug
 #-dce full
