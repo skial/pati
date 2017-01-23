@@ -118,13 +118,20 @@
 				hello
 				world
 			</div>
+			<div class="dud">
+				hello static world
+			</div>
+			<p id="123">hello world</p>
 		</div>
 		<div class="outcome">
 			<div>
 				hello
 				<json-data select=".single .value"></json-data>
 			</div>
-			<json-data select=".single .value" to:p>
+			<json-data class="dud" select=".single .value" to:div>
+				<span :to="hello static world"></span>
+			</json-data>
+			<json-data select=".single .value" id="123" to:p>
 				<span :to="hello {*}"></span>
 			</json-data>
 		</div>

@@ -12,15 +12,13 @@ using uhx.pati.Utilities;
 	
 	public var to(get, never):Null<String>;
 	
-	public function new(v:Element) {
+	public #if !debug inline #end function new(v:Element) {
 		this = v;
 	}
 	
-	//
-	
 	// getters/setters
 	
-	private function get_to():Null<String> {
+	private #if !debug inline #end function get_to():Null<String> {
 		var result = null;
 		
 		for (attribute in this.attributes) if (attribute.name == PhantomAttr.To) {
@@ -33,103 +31,69 @@ using uhx.pati.Utilities;
 	
 	// casts
 	
-	@:to private function toNode() return (this:Node);
-	@:from private static function fromNode(v:Node):Phantom return cast v;
-	@:from private static function fromString(v:String):Phantom return window.document.createTextNode(v);
+	@:to private #if !debug inline #end function toNode() return (this:Node);
+	@:from private static #if !debug inline #end function fromNode(v:Node):Phantom return cast v;
+	@:from private static #if !debug inline #end function fromString(v:String):Phantom return window.document.createTextNode(v);
 	
 	// operator overloads
 	
-	@:op(A>>B) @:commutative
-	public static function mapGenericData<D, S>(node:Phantom, pair:Pair<D, IProcessor<D, S>>):Phantom {
-		var result = node;
-		var find = pair.b.find.bind( pair.a, _ );
+	@:op(A|B) @:commutative
+	public static #if !debug inline #end function convertNode<D, S>(node:Phantom, pair:Pair<D, IProcessor<D, S>>):Phantom {
 		var to = node.to;
-		
-		console.log( to );
+		var result = node;
+		var finder = finder.bind( pair, _ );
 		
 		if (to != null) {
 			var start = to.indexOf('{');
 			var end = to.indexOf('}');
 			
-			console.log( start, end, start > -1 && end > -1 && end > start );
-			// Value needs to be interpreted.
 			if (start > -1 && end > -1 && end > start) {
-				var interpreted = to.trackAndInterpolate('}'.code, ['{'.code => '}'.code], finder.bind( pair, _ ) );
-				console.log( interpreted );
+				// Value needs to be interpreted.
+				var interpreted = to.trackAndInterpolate('}'.code, ['{'.code => '}'.code], finder );
 				result = (interpreted.value:Phantom);
 				
 			} else {
 				// Attempt to match values with the entire attribute value.
-				var matches = find( to );
-				
-				if (matches.length > 0) {
-					result = (matches.map( cast pair.b.stringify ).join(' '):Phantom);
-					
-				}
+				result = (finder( to ):Phantom);
 				
 			}
 			
 		}
-		
-		console.log( result );
 		
 		return result;
 	}
 	
-	/*@:op(A>>B) @:commutative
-	public static function mapArrayValues<D, S>(node:Phantom, pair:Pair<Array<Any>, IProcessor<D, S>>):Phantom {
-		var result = node;
-		var to = node.to;
+	@:op(A|B) @:commutative
+	public static #if !debug inline #end function replaceElement(newNode:Phantom, oldNode:Element):Phantom {
+		var result = oldNode;
 		
-		if (pair.a.length > 0) {
-			var matches = [];
-			
-			for (value in pair.a) {
-				console.log( value );
-				
-				if (to != null) {
-					var start = to.indexOf('{');
-					var end = to.indexOf('}');
-					
-					//console.log( start, end, start > -1 && end > -1 && end > start );
-					// Value needs to be interpreted.
-					if (start > -1 && end > -1 && end > start) {
-						var interpreted = to.trackAndInterpolate('}'.code, ['{'.code => '}'.code], function(str) {
-							var m = pair.b.find( cast value, str );
-							console.log( m, str, str.length );
-							return m.length > 0 ? m.map( cast pair.b.stringify ).join(' ') : str;
-						} );
-						
-						matches.push( interpreted.value );
-						
-					} else {
-						// Attempt to match values with the entire attribute value.
-						var m = pair.b.find( cast value, to );
-						
-						if (m.length > 0) {
-							matches.push( m.map( cast pair.b.stringify ).join(' ') );
-							
-						}
-						
-					}
-					
-				}
-				
-			}
-			
-			console.log( matches );
+		if (oldNode != newNode) {
+			result = newNode;
+			oldNode.parentElement.insertBefore(newNode, oldNode);
+			oldNode.remove();
 			
 		}
 		
 		return result;
-	}*/
+	}
 	
-	private static function finder<D, S>(pair:Pair<D, IProcessor<D, S>>, str:String):String {
-		console.log( pair.a, str );
+	@:op(A|B) @:commutative
+	public static #if !debug inline #end function replaceNode(newNode:Phantom, oldNode:Node):Phantom {
+		return switch oldNode.nodeType {
+			case Node.ELEMENT_NODE, Node.DOCUMENT_NODE, Node.DOCUMENT_FRAGMENT_NODE:
+				replaceElement(newNode, cast oldNode);
+				
+			case _:
+				oldNode;
+				
+		}
+	}
+	
+	//
+	
+	private static #if !debug inline #end function finder<D, S>(pair:Pair<D, IProcessor<D, S>>, str:String):String {
 		var matches = pair.b.find( pair.a, str );
-		console.log( matches );
 		return matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : str;
-		
 	}
 	
 }

@@ -64,19 +64,19 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	public function onJsonDataAvailable(data:Any):Void {
 		console.log( 'triggered local json data callback', data );
 		var matches = find(data, select);
-		console.log( select, matches );
-		var hasChildren = this.childNodes.length > 0;
-		var self:IProcessor<Any, Any> = this;
-		var pair:Pair<Any, IProcessor<Any, Any>> = new Pair(cast matches, self);
 		
-		if (hasChildren) {
-			for (child in childNodes) if (child.nodeType == Node.ELEMENT_NODE){
-				console.log( child, (child:Phantom) >> pair );
+		// Only interested if it has elements are children.
+		if (this.children.length > 0) {
+			var self:IProcessor<Any, Any> = this;
+			var pair:Pair<Any, IProcessor<Any, Any>> = new Pair(cast matches, self);
+			
+			for (child in children) {
+				(child:Phantom) | pair | child;
 				
 			}
 			
-		} else for (match in matches) {
-			this.appendChild( window.document.createTextNode(match) );
+		} else {
+			appendChild( (matches.map( stringify ).join(' '):Phantom) );
 			
 		}
 		
