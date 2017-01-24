@@ -11,6 +11,7 @@ package uhx.pati;
 	var Prefix = 'data-prefix';
 	var To = 'to:';
 	var Select = 'select';
+	var Process = ':';
 }
 
 @:enum @:forward abstract StorageConsts(String) from String to String {

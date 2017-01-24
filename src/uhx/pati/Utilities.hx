@@ -1,11 +1,38 @@
 package uhx.pati;
 
 import haxe.ds.IntMap;
+import tink.core.Pair;
+import uhx.pati.Consts;
 
 using StringTools;
 using uhx.pati.Utilities;
 
 class Utilities {
+	
+	public static inline function replaceAttributes(node:Phantom, resolve:String->String):Phantom {
+		// Don't iterate over a live list.
+		for (attribute in [for (a in node.attributes) a]) {
+			switch attribute.name {
+				case _.startsWith(Process) => true:
+					node.setAttribute( attribute.name.substring(1), resolve(attribute.value) );
+					node.removeAttribute( attribute.name );
+					
+				case _:
+					
+					
+			}
+			
+		}
+		
+		return node;
+	}
+	
+	public static inline function bracketInterpolate<A, B>(value:String, pair:Pair<A, IProcessor<A, B>>) {
+		return trackAndInterpolate(value, -1, ['{'.code => '}'.code], function(str) {
+			var matches = pair.b.find( pair.a, str );
+			return matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : str;
+		});
+	}
 	
 	/** All these are from an internal project likely never to see the light of day */
 	public static function trackAndConsume(value:String, until:Int, track:IntMap<Int>):String {
@@ -105,7 +132,7 @@ class Utilities {
 			
 			if (track.exists( character )) {
 				var _char = track.get( character );
-				var _info = value.substr( index + 1 ).trackAndInterpolate( until, track, resolve );
+				var _info = value.substr( index + 1 ).trackAndInterpolate( _char, track, resolve );
 				var _value = _info.value;
 				match = true;
 				pos = index += _info.length + 2;

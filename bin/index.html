@@ -121,7 +121,15 @@
 			<div class="dud">
 				hello static world
 			</div>
-			<p id="123">hello world</p>
+			<p id="1">hello world</p>
+			<ul id="2">
+				<li class="foo" id="age-1">
+					foo is 1 years old.
+				</li>
+				<li class="bar" id="age-2">
+					bar is 2 years old.
+				</li>
+			</ul>
 		</div>
 		<div class="outcome">
 			<div>
@@ -131,8 +139,13 @@
 			<json-data class="dud" select=".single .value" to:div>
 				<span :to="hello static world"></span>
 			</json-data>
-			<json-data select=".single .value" id="123" to:p>
+			<json-data select=".single .value" id="1" to:p>
 				<span :to="hello {*}"></span>
+			</json-data>
+			<json-data select=".people" id="2" to:ul>
+				<li :class=".name" :id="age-{.age}">
+					<span :to="{.name} is {.age} years old."></span>
+				</li>
 			</json-data>
 		</div>
 	</section>

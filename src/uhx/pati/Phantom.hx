@@ -6,6 +6,7 @@ import tink.core.Pair;
 import uhx.pati.Consts;
 import uhx.pati.IProcessor;
 
+using StringTools;
 using uhx.pati.Utilities;
 
 @:forward abstract Phantom(Element) from Element to Element {
@@ -35,26 +36,65 @@ using uhx.pati.Utilities;
 	@:from private static #if !debug inline #end function fromNode(v:Node):Phantom return cast v;
 	@:from private static #if !debug inline #end function fromString(v:String):Phantom return window.document.createTextNode(v);
 	
+	//
+	
+	private static #if !debug inline #end function processAttribute<D, S>(value:String, pair:Pair<D, IProcessor<D, S>>):String {
+		var result = value;
+		var start = value.indexOf('{');
+		var end = value.indexOf('}');
+		
+		if (start > -1 && end > -1 && end > start) {
+			// Value needs to be interpreted.
+			var interpreted = value.bracketInterpolate( pair );
+			result = interpreted.value;
+			
+		} else {
+			// Attempt to match values with the entire attribute value.
+			var matches = pair.b.find( pair.a, value );
+			result = (matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : value);
+			
+		}
+		
+		return result;
+	}
+	
 	// operator overloads
 	
 	@:op(A|B) @:commutative
 	public static #if !debug inline #end function convertNode<D, S>(node:Phantom, pair:Pair<D, IProcessor<D, S>>):Phantom {
 		var to = node.to;
 		var result = node;
-		var finder = finder.bind( pair, _ );
 		
 		if (to != null) {
-			var start = to.indexOf('{');
-			var end = to.indexOf('}');
+			result = (processAttribute(to, pair):Phantom);
 			
-			if (start > -1 && end > -1 && end > start) {
-				// Value needs to be interpreted.
-				var interpreted = to.trackAndInterpolate('}'.code, ['{'.code => '}'.code], finder );
-				result = (interpreted.value:Phantom);
+		} else if (result.nodeType == Node.ELEMENT_NODE) {
+			if (Std.is(pair.a, Array)) {
+				var a:Array<Any> = cast pair.a;
+				var remove = false;
 				
-			} else {
-				// Attempt to match values with the entire attribute value.
-				result = (finder( to ):Phantom);
+				for (value in a) {
+					var p:Pair<D, IProcessor<D, S>> = cast new Pair(value, pair.b);
+					var clone = node.cloneNode(true);
+					var modified = convertNode( clone, p );
+					
+					console.log(node, modified, node != modified);
+					if (node != modified) {
+						for (child in [for (c in modified.children) c]) {
+							replaceNode( convertNode( child, p ), child );
+							
+						}
+						
+						modified.replaceAttributes( processAttribute.bind(_, p) );
+						node.parentElement.insertBefore(modified, node);
+						
+						remove = true;
+						
+					}
+					
+				}
+				
+				if (remove) node.remove();
 				
 			}
 			
@@ -87,13 +127,6 @@ using uhx.pati.Utilities;
 				oldNode;
 				
 		}
-	}
-	
-	//
-	
-	private static #if !debug inline #end function finder<D, S>(pair:Pair<D, IProcessor<D, S>>, str:String):String {
-		var matches = pair.b.find( pair.a, str );
-		return matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : str;
 	}
 	
 }

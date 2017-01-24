@@ -65,12 +65,13 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 		console.log( 'triggered local json data callback', data );
 		var matches = find(data, select);
 		
-		// Only interested if it has elements are children.
+		// Only interested if it has elements as children.
 		if (this.children.length > 0) {
 			var self:IProcessor<Any, Any> = this;
 			var pair:Pair<Any, IProcessor<Any, Any>> = new Pair(cast matches, self);
 			
-			for (child in children) {
+			// Don't iterate over a live list.
+			for (child in [for (c in children) c]) {
 				(child:Phantom) | pair | child;
 				
 			}
