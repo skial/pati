@@ -4,6 +4,8 @@ import js.html.*;
 import js.Browser.*;
 import uhx.pati.Consts;
 
+using uhx.pati.Utilities;
+
 using StringTools;
 
 /**
@@ -26,22 +28,27 @@ class ConvertTag<D, S> extends Staticise {
 	//
 	
 	public override function attached():Void {
-		if (to != null) {
-			var replacement = window.document.createElement(to);
-			
-			for (attribute in attributes) switch attribute.name {
-				case _.startsWith(To) || ignoredAttributes.indexOf(_) > -1 => false:
-					replacement.setAttribute( attribute.name, attribute.value );
+		if (!hasAttribute(PendingRemoval)) {
+			if (to != null) {
+				var replacement = window.document.createElement(to);
+				
+				for (attribute in attributes) switch attribute.name {
+					case _.startsWith(To) || ignoredAttributes.indexOf(_) > -1 => false:
+						replacement.setAttribute( attribute.name, attribute.value );
+						
+						case _:
+							
+						}
+						
+					console.log( outerHTML );
+					for (node in this.childNodes) replacement.appendChild( (node:Phantom).clone() );
+					this.parentElement.insertBefore(replacement, this);
+						
+				} else {
+					console.log( outerHTML );
+					for (node in this.childNodes) this.parentElement.insertBefore( (node:Phantom).clone(), this );
 					
-				case _:
-					
-			}
-			
-			for (node in this.childNodes) replacement.appendChild( window.document.importNode( node, true ) );
-			this.parentElement.insertBefore(replacement, this);
-			
-		} else {
-			for (node in this.childNodes) this.parentElement.insertBefore( window.document.importNode( node, true ), this );
+				}
 			
 		}
 		
@@ -60,7 +67,7 @@ class ConvertTag<D, S> extends Staticise {
 	}
 	
 	private function get_ignoredAttributes():Array<String> {
-		return [To, UID];
+		return [To, UID, PendingRemoval, Phase];
 	}
 	
 	private override function get_phase():EventPhase {

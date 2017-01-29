@@ -6,6 +6,7 @@ import tink.core.Pair;
 import uhx.pati.Consts;
 import uhx.pati.IProcessor;
 
+using Type;
 using StringTools;
 using uhx.pati.Utilities;
 
@@ -38,79 +39,51 @@ using uhx.pati.Utilities;
 	
 	//
 	
-	private static #if !debug inline #end function processAttribute<D, S>(value:String, pair:Pair<D, IProcessor<D, S>>):String {
-		var result = value;
-		var start = value.indexOf('{');
-		var end = value.indexOf('}');
-		
-		if (start > -1 && end > -1 && end > start) {
-			// Value needs to be interpreted.
-			var interpreted = value.bracketInterpolate( pair );
-			result = interpreted.value;
-			
-		} else {
-			// Attempt to match values with the entire attribute value.
-			var matches = pair.b.find( pair.a, value );
-			result = (matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : value);
-			
-		}
-		
-		return result;
-	}
-	
 	// operator overloads
 	
 	@:op(A|B) @:commutative
 	public static #if !debug inline #end function convertNode<D, S>(node:Phantom, pair:Pair<D, IProcessor<D, S>>):Phantom {
 		var to = node.to;
 		var result = node;
+		var remove = false;
 		
 		if (to != null) {
-			result = (processAttribute(to, pair):Phantom);
+			result = Utilities.processAttribute(to, pair);
+			node.setAttribute(PendingRemoval, 'true');
 			
-		} else if (result.nodeType == Node.ELEMENT_NODE) {
-			if (Std.is(pair.a, Array)) {
-				var a:Array<Any> = cast pair.a;
-				var remove = false;
+		} else {
+			if (CustomElement.knownComponents.indexOf( node.tagName.toLowerCase() ) > -1) {
+				// TODO do I need need this?
 				
-				for (value in a) {
-					var p:Pair<D, IProcessor<D, S>> = cast new Pair(value, pair.b);
-					var clone = node.cloneNode(true);
-					var modified = convertNode( clone, p );
-					
-					console.log(node, modified, node != modified);
-					if (node != modified) {
-						for (child in [for (c in modified.children) c]) {
-							replaceNode( convertNode( child, p ), child );
-							
-						}
-						
-						modified.replaceAttributes( processAttribute.bind(_, p) );
-						node.parentElement.insertBefore(modified, node);
-						
-						remove = true;
-						
-					}
+			} else {
+				console.log( pair.a, node.outerHTML );
+				
+				for (child in [for (c in node.children) c]) {
+					insertBeforeElement( convertNode( child, pair ), child );
 					
 				}
 				
-				if (remove) node.remove();
+				node.replaceAttributes( Utilities.processAttribute.bind(_, pair) );
+				
 				
 			}
 			
 		}
 		
+		if (remove) node.setAttribute(PendingRemoval, 'true');
+		
 		return result;
 	}
 	
 	@:op(A|B) @:commutative
-	public static #if !debug inline #end function replaceElement(newNode:Phantom, oldNode:Element):Phantom {
+	public static #if !debug inline #end function insertBeforeElement(newNode:Phantom, oldNode:Element):Phantom {
 		var result = oldNode;
 		
 		if (oldNode != newNode) {
 			result = newNode;
 			oldNode.parentElement.insertBefore(newNode, oldNode);
-			oldNode.remove();
+			//oldNode.remove();
+			//oldNode.setAttribute(PendingRemoval, 'true');
 			
 		}
 		
@@ -118,10 +91,10 @@ using uhx.pati.Utilities;
 	}
 	
 	@:op(A|B) @:commutative
-	public static #if !debug inline #end function replaceNode(newNode:Phantom, oldNode:Node):Phantom {
+	public static #if !debug inline #end function insertBeforeNode(newNode:Phantom, oldNode:Node):Phantom {
 		return switch oldNode.nodeType {
 			case Node.ELEMENT_NODE, Node.DOCUMENT_NODE, Node.DOCUMENT_FRAGMENT_NODE:
-				replaceElement(newNode, cast oldNode);
+				insertBeforeElement(newNode, cast oldNode);
 				
 			case _:
 				oldNode;

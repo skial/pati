@@ -1,5 +1,13 @@
 <html>
 <head>
+	<style>
+		.pass {
+			background: lime;
+		}
+		.error {
+			background: red;
+		}
+	</style>
 	<script>
 	var specValues = [1, 2, 3, 4, 5];
 	var json_data = {
@@ -22,6 +30,7 @@
 			{"name":"foo", "age":1},
 			{"name":"bar", "age":2}
 		],
+		"person":{"name":"baz", "age":3},
 		"round":{
 			"about":{
 				"selector":".people"
@@ -130,6 +139,11 @@
 					bar is 2 years old.
 				</li>
 			</ul>
+			<ul id="3">
+				<li class="baz" id="age-3">
+					baz is 3 years old.
+				</li>
+			</ul>
 		</div>
 		<div class="outcome">
 			<div>
@@ -142,10 +156,24 @@
 			<json-data select=".single .value" id="1" to:p>
 				<span :to="hello {*}"></span>
 			</json-data>
-			<json-data select=".people" id="2" to:ul>
+			<json-data id="2" select=".people" to:ul each>
 				<li :class=".name" :id="age-{.age}">
 					<span :to="{.name} is {.age} years old."></span>
 				</li>
+			</json-data>
+			<json-data id="3" select=".person" to:ul>
+				<li :class=".name" :id="age-{.age}">
+					<span :to="{.name} is {.age} years old."></span>
+				</li>
+			</json-data>
+			<json-data select=".collection" :class=":first-child" to:p>
+				<span :to=":first-child"></span>
+				<json-data select=":nth-child(n+2)" :class=":first-child" to:p>
+					<span :to=":first-child"></span>
+					<json-data select=":nth-child(n+2)" :class=":first-child" to:p>
+						<span :to=":first-child"></span>
+					</json-data>
+				</json-data>
 			</json-data>
 		</div>
 	</section>

@@ -1,5 +1,21 @@
 package uhx.pati;
 
+@:enum @:forward abstract IntConsts(Int) from Int to Int {
+	var Left = '{'.code;
+	var Right = '}'.code;
+	var Process = ':'.code;
+	
+	@:to private inline function asString():String {
+		return switch this {
+			case Left: '{';
+			case Right: '}';
+			case Process: ':';
+			case _: String.fromCharCode(this);
+		}
+	}
+	
+}
+
 @:enum @:forward abstract SelectorConsts(String) from String to String {
 	var All = '*';
 	var Template = 'template';
@@ -11,7 +27,10 @@ package uhx.pati;
 	var Prefix = 'data-prefix';
 	var To = 'to:';
 	var Select = 'select';
-	var Process = ':';
+	var PendingRemoval = 'pending-remove';
+	var ScopedData = 'scoped-data';
+	var Phase = 'phase';
+	var Each = 'each';
 }
 
 @:enum @:forward abstract StorageConsts(String) from String to String {

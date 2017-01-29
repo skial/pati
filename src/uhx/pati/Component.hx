@@ -40,6 +40,7 @@ class Component extends uhx.pati.TemplateElement {
 		super.attachedCallback();
 		
 		uid = stampUid( this );
+		setAttribute(Phase, phase);
 		
 		if (isCustomChild) this.parentElement.dispatchEvent( new CustomEvent(ChildAdded, { detail:uid, bubbles:true } ) );
 		if (phase == Bubbling && !hasCustomChildren) {
@@ -53,7 +54,22 @@ class Component extends uhx.pati.TemplateElement {
 	}
 	
 	public override function detachedCallback():Void {
-		super.detachedCallback();		
+		super.detachedCallback();
+		console.log( 'DETACHED', this, this.parentElement );
+		setAttribute(PendingRemoval, 'true');
+		
+		
+		/*if (phase == Capturing && hasCustomChildren) {
+			for (customChild in querySelectorAll(':scope > ' + CustomElement.knownComponents.join(', '))) {
+				//if (untyped (customChild:Component).phase == Capturing) {
+					customChild.dispatchEvent( new CustomEvent( Completed, { detail:uid, bubbles:false } ) );
+					
+				//}
+				
+			}
+			
+		}*/
+		
 		detached();
 	}
 	
@@ -90,19 +106,21 @@ class Component extends uhx.pati.TemplateElement {
 			result = hash.encode( [for (i in 0...stamp.length) stamp.charCodeAt(i)] );
 			
 		}
-		
+		//console.log( this, uid );
 		return result;
 	}
 	
 	// Custom event handlers
 	
 	public function onCustomChildAdded(?e:CustomEvent):Void {
+		console.log( htmlFullname, e );
 		e.stopPropagation();
 	}
 	
 	public function onCustomChildFinished(?e:CustomEvent):Void {
+		console.log( htmlFullname, e );
 		e.stopPropagation();
-		var children:Array<Element> = [for (node in this.querySelectorAll('[UID="${e.detail}"]')) cast node];
+		var children:Array<Element> = [for (node in querySelectorAll('[UID="${e.detail}"]')) cast node];
 		
 		for (child in children) child.remove();
 		
@@ -110,9 +128,10 @@ class Component extends uhx.pati.TemplateElement {
 	}
 	
 	public function onCustomParentFinished(?e:CustomEvent):Void {
+		console.log( htmlFullname, e );
 		e.stopPropagation();
 		
-		attached();
+		created();
 	}
 	
 	//
@@ -135,11 +154,11 @@ class Component extends uhx.pati.TemplateElement {
 	}
 	
 	private function get_isCustomChild():Bool {
-		return window.document.querySelectorAll('[$UID] $htmlFullname[$UID="$uid"]').length > 0;
+		return window.document.querySelectorAll('[$UID] > $htmlFullname[$UID="$uid"]').length > 0;
 	}
 	
 	private function get_hasCustomChildren():Bool {
-		return querySelectorAll( CustomElement.knownComponents.join(', ') ).length > 0;
+		return querySelectorAll( ':scope > ' + CustomElement.knownComponents.join(', ') ).length > 0;
 	}
 	
 	private function get_phase():EventPhase {

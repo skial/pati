@@ -18,6 +18,7 @@ class CustomElement extends Element {
 			knownComponents.push( htmlFullname );
 			
 		}
+		
 		console.log( htmlName, htmlPrefix, htmlFullname, knownComponents );
 		window.document.registerElement(htmlFullname, { prototype: this });
 		

@@ -1,13 +1,44 @@
 package uhx.pati;
 
+import js.html.*;
+import js.Browser.*;
 import haxe.ds.IntMap;
 import tink.core.Pair;
 import uhx.pati.Consts;
+import uhx.pati.CustomElement;
 
 using StringTools;
 using uhx.pati.Utilities;
 
 class Utilities {
+	
+	/*
+	 *	`node.cloneNode` and `window.document.importNode`, where the node to be cloned
+	 *	is a custom element, the newly cloned node doesnt appear to be initialized
+	 *	fully.
+	*/
+	public static function clone(node:Phantom, deep:Bool = true):Phantom {
+		var tagName = '';
+		
+		if (node.nodeType == Node.ELEMENT_NODE && CustomElement.knownComponents.indexOf( tagName = node.tagName.toLowerCase() ) > -1) {
+			/*var template:TemplateElement = cast window.document.createElement('template');
+			var owner:Document = template.content.ownerDocument;*/
+			var clone:Phantom = window.document.createElement( tagName );
+			//console.log( 'cloning', node.outerHTML, node );
+			//clone.setAttribute(Pause, 'true');
+			for (a in node.attributes) if (a.name != UID) clone.setAttribute( a.name, a.value );
+			for (c in node.childNodes) clone.appendChild( c.clone( deep ) );
+			//clone.removeAttribute(Pause);
+			//console.log( 'cloned', clone.outerHTML, clone );
+			node = clone;
+			
+		} else {
+			node = node.cloneNode( deep );
+			
+		}
+		
+		return node;
+	}
 	
 	public static inline function replaceAttributes(node:Phantom, resolve:String->String):Phantom {
 		// Don't iterate over a live list.
@@ -27,9 +58,31 @@ class Utilities {
 		return node;
 	}
 	
-	public static inline function bracketInterpolate<A, B>(value:String, pair:Pair<A, IProcessor<A, B>>) {
-		return trackAndInterpolate(value, -1, ['{'.code => '}'.code], function(str) {
+	public static function processAttribute<D, S>(value:String, pair:Pair<D, IProcessor<D, S>>):String {
+		var result = value;
+		var start = value.indexOf(Left);
+		var end = value.indexOf(Right);
+		
+		if (start > -1 && end > -1 && end > start) {
+			// Value needs to be interpreted.
+			var interpreted = value.bracketInterpolate( pair );
+			result = interpreted.value;
+			
+		} else {
+			// Attempt to match values with the entire attribute value.
+			var matches = pair.b.find( pair.a, value );
+			console.log( value, matches );
+			result = (matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : value);
+			
+		}
+		
+		return result;
+	}
+	
+	public static #if !debug inline #end function bracketInterpolate<A, B>(value:String, pair:Pair<A, IProcessor<A, B>>) {
+		return trackAndInterpolate(value, -1, [Left => Right], function(str) {
 			var matches = pair.b.find( pair.a, str );
+			console.log( str, pair.a, matches,matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : str );
 			return matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : str;
 		});
 	}
@@ -133,7 +186,7 @@ class Utilities {
 			if (track.exists( character )) {
 				var _char = track.get( character );
 				var _info = value.substr( index + 1 ).trackAndInterpolate( _char, track, resolve );
-				var _value = _info.value;
+				var _value = resolve(_info.value);
 				match = true;
 				pos = index += _info.length + 2;
 				result += _value;
@@ -146,7 +199,7 @@ class Utilities {
 
 		}
 		
-		return {matched:match, length:pos, value:resolve(result)};
+		return {matched:match, length:pos, value:result};
 	}
 	
 }
