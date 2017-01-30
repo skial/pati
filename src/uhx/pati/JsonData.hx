@@ -18,7 +18,6 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	public static var globalData:FutureTrigger<Any> = new FutureTrigger();
 	
 	public static function onGlobalJsonDataAvailable(e:CustomEvent):Void {
-		//console.log( 'triggered global json data callback', e );
 		globalData.trigger( e.detail );
 	}
 	
@@ -44,15 +43,10 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 		super();
 	}
 	
-	//
+	// overloads
 	
 	public override function attached():Void {
-		//super.attachedCallback();
-		//console.log( htmlFullname, 'added', this, uid, this.parentElement, phase == Capturing ? 'capture' : 'bubble', isCustomChild, hasCustomChildren );
-		console.log( '$htmlFullname attached', this.outerHTML, isCustomChild, hasCustomChildren );
 		if (!isCustomChild) {
-			//console.log( globalData );
-			//console.log( 'adding JsonDataRecieved event listener' );
 			if (!isScoped) {
 				var link = globalData.asFuture().handle( onDataAvailable );
 				
@@ -62,13 +56,8 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 			}
 			
 		}
+		
 	}
-	
-/*	public override function created():Void {
-		
-		
-		super.created();
-	}*/
 	
 	//
 	

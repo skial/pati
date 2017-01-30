@@ -31,6 +31,9 @@ package uhx.pati;
 	var ScopedData = 'scoped-data';
 	var Phase = 'phase';
 	var Each = 'each';
+	var Append = ':+';
+	var Prepend = '+:';
+	var UseText = 'use:text';
 }
 
 @:enum @:forward abstract StorageConsts(String) from String to String {

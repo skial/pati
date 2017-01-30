@@ -65,7 +65,6 @@ using uhx.pati.Utilities;
 				
 				node.replaceAttributes( Utilities.processAttribute.bind(_, pair) );
 				
-				
 			}
 			
 		}

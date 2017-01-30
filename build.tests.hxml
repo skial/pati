@@ -34,3 +34,8 @@
 
 -main uhx.pati.JsonData
 -js bin/json.data.js
+
+--next
+
+-main uhx.pati.CssData
+-js bin/css.data.js
