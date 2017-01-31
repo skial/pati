@@ -52,20 +52,12 @@ using uhx.pati.Utilities;
 			node.setAttribute(PendingRemoval, True);
 			
 		} else {
-			if (CustomElement.knownComponents.indexOf( node.tagName.toLowerCase() ) > -1) {
-				// TODO do I need need this?
-				
-			} else {
-				console.log( pair.a, node.outerHTML );
-				
-				for (child in [for (c in node.children) c]) {
-					insertBeforeElement( convertNode( child, pair ), child );
-					
-				}
-				
-				node.replaceAttributes( Utilities.processAttribute.bind(_, pair) );
+			for (child in [for (c in node.children) c]) {
+				insertBeforeElement( convertNode( child, pair ), child );
 				
 			}
+			
+			node.replaceAttributes( Utilities.processAttribute.bind(_, pair) );
 			
 		}
 		
@@ -81,8 +73,6 @@ using uhx.pati.Utilities;
 		if (oldNode != newNode) {
 			result = newNode;
 			oldNode.parentElement.insertBefore(newNode, oldNode);
-			//oldNode.remove();
-			//oldNode.setAttribute(PendingRemoval, 'true');
 			
 		}
 		
