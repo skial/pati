@@ -27,22 +27,22 @@ class CustomElement extends Element {
 	// Lifecycle callbacks for v0 of the Custom Elements spec.
 	
 	// 	An instance of the element is created
-	public function createdCallback():Void {
+	@:keep public function createdCallback():Void {
 		
 	}
 	
 	// An instance was inserted into the document
-	public function attachedCallback():Void {
+	@:keep public function attachedCallback():Void {
 		
 	}
 	
 	// An instance was removed from the document
-	public function detachedCallback():Void {
+	@:keep public function detachedCallback():Void {
 		
 	}
 	
 	// An attribute was added, removed, or updated
-	public function attributeChangedCallback(name:String, oldValue:Any, newValue:Any):Void {
+	@:keep public function attributeChangedCallback(name:String, oldValue:Any, newValue:Any):Void {
 		
 	}
 	
