@@ -64,7 +64,7 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 	
 	// (g/s)etters
 	
-	public #if !debug inline #end function get_to():Null<String> {
+	public function get_to():Null<String> {
 		var result = null;
 		
 		if (hasAttribute(ShortTo)) {
