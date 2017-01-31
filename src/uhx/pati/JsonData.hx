@@ -161,18 +161,18 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	
 	//
 	
-	private function get_each():Bool {
+	private #if !debug inline #end function get_each():Bool {
 		return hasAttribute(Each);
 	}
 	
-	private function get_isScoped():Bool {
+	private #if !debug inline #end function get_isScoped():Bool {
 		return hasAttribute(ScopedData);
 	}
 	
-	private function get_select():Null<String> {
-		for (attribute in attributes) if (attribute.name == Select) {
-				select = attribute.value;
-				break;
+	private #if !debug inline #end function get_select():Null<String> {
+		if (hasAttribute(Select)) {
+			select = getAttribute(Select);
+			
 		}
 		
 		return select;

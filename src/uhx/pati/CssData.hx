@@ -35,7 +35,6 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	// IProcessor fields
 	
 	public function onDataAvailable(data:Array<Phantom>):Void {
-		console.log( data, prepend, firstChild );
 		var attach = childNodes.length > 0 && prepend ? insertBefore.bind(_, firstChild) : appendChild;
 		var newNodes = asText ? [(stringify(data):Phantom)] : data.map( Utilities.clone.bind(_, true) );
 		
@@ -60,22 +59,22 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	
 	// (g/s)etters
 	
-	private function get_each():Bool {
+	private #if !debug inline #end function get_each():Bool {
 		return hasAttribute(Each);
 	}
 	
-	private function get_asText():Bool {
+	private #if !debug inline #end function get_asText():Bool {
 		return hasAttribute(UseText);
 	}
 	
-	private function get_prepend():Bool {
+	private #if !debug inline #end function get_prepend():Bool {
 		return hasAttribute(Prepend) && !hasAttribute(Append);
 	}
 	
-	private function get_select():Null<String> {
-		for (attribute in attributes) if (attribute.name == Select) {
-				select = attribute.value;
-				break;
+	private #if !debug inline #end function get_select():Null<String> {
+		if (hasAttribute(Select)) {
+			select = getAttribute(Select);
+			
 		}
 		
 		return select;

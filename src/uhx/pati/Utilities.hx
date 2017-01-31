@@ -21,15 +21,9 @@ class Utilities {
 		var tagName = '';
 		
 		if (node.nodeType == Node.ELEMENT_NODE && CustomElement.knownComponents.indexOf( tagName = node.tagName.toLowerCase() ) > -1) {
-			/*var template:TemplateElement = cast window.document.createElement('template');
-			var owner:Document = template.content.ownerDocument;*/
 			var clone:Phantom = window.document.createElement( tagName );
-			//console.log( 'cloning', node.outerHTML, node );
-			//clone.setAttribute(Pause, 'true');
 			for (a in node.attributes) if (a.name != UID) clone.setAttribute( a.name, a.value );
 			for (c in node.childNodes) clone.appendChild( c.clone( deep ) );
-			//clone.removeAttribute(Pause);
-			//console.log( 'cloned', clone.outerHTML, clone );
 			node = clone;
 			
 		} else {
@@ -71,7 +65,6 @@ class Utilities {
 		} else {
 			// Attempt to match values with the entire attribute value.
 			var matches = pair.b.find( pair.a, value );
-			console.log( value, matches );
 			result = (matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : value);
 			
 		}
@@ -82,7 +75,6 @@ class Utilities {
 	public static #if !debug inline #end function bracketInterpolate<A, B>(value:String, pair:Pair<A, IProcessor<A, B>>) {
 		return trackAndInterpolate(value, -1, [Left => Right], function(str) {
 			var matches = pair.b.find( pair.a, str );
-			console.log( str, pair.a, matches,matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : str );
 			return matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : str;
 		});
 	}

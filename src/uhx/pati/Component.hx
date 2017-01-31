@@ -122,7 +122,7 @@ class Component extends uhx.pati.TemplateElement {
 	
 	//
 	
-	private function get_uid():String {
+	private #if !debug inline #end function get_uid():String {
 		if (!this.hasAttribute(UID) && uid == null) {
 			uid = '';
 			
@@ -134,16 +134,16 @@ class Component extends uhx.pati.TemplateElement {
 		return uid;
 	}
 	
-	private function set_uid(v:String):String {
+	private #if !debug inline #end function set_uid(v:String):String {
 		this.setAttribute(UID, v);
 		return uid = v;
 	}
 	
-	private function get_isCustomChild():Bool {
+	private #if !debug inline #end function get_isCustomChild():Bool {
 		return window.document.querySelectorAll('[$UID] > $htmlFullname[$UID="$uid"]').length > 0;
 	}
 	
-	private function get_hasCustomChildren():Bool {
+	private #if !debug inline #end function get_hasCustomChildren():Bool {
 		return querySelectorAll( '$Scope > ' + CustomElement.knownComponents.join(', ') ).length > 0;
 	}
 	

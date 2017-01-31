@@ -40,12 +40,10 @@ class ConvertTag<D, S> extends Staticise {
 							
 						}
 						
-					console.log( outerHTML );
 					for (node in this.childNodes) replacement.appendChild( (node:Phantom).clone() );
 					this.parentElement.insertBefore(replacement, this);
 						
 				} else {
-					console.log( outerHTML );
 					for (node in this.childNodes) this.parentElement.insertBefore( (node:Phantom).clone(), this );
 					
 				}
@@ -57,7 +55,7 @@ class ConvertTag<D, S> extends Staticise {
 	
 	//
 	
-	private function get_to():Null<String> {
+	private #if !debug inline #end function get_to():Null<String> {
 		for (attribute in attributes) if (attribute.name.startsWith(To)) {
 				to = attribute.name.substring(To.length);
 				break;
