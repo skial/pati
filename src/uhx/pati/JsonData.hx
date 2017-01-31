@@ -155,10 +155,6 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 		return cast results;
 	}
 	
-	public function handleMatch(child:Node, match:Null<Any>):Array<Node> {
-		return [];
-	}
-	
 	//
 	
 	private #if !debug inline #end function get_each():Bool {
