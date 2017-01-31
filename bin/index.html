@@ -275,6 +275,11 @@
 					<p>Hello World</p>
 				</span>
 			</div>
+			<div class="a3">
+				<p>Hello</p>
+				<p>Haxe</p>
+				<p>World</p>
+			</div>
 		</div>
 		<div class="outcome">
 			<div class="a1">
@@ -282,6 +287,9 @@
 			</div>
 			<div class="a2">
 				
+			</div>
+			<div class="a3">
+				<p>Haxe</p>
 			</div>
 			<move-tags to=".move.tags .outcome .a1">
 				<p>
@@ -293,6 +301,12 @@
 				<move-tags to=".move.tags .outcome .silly">
 					<p>Hello World</p>
 				</move-tags>
+			</move-tags>
+			<move-tags to=".move.tags .outcome .a3" +:>
+				<p>Hello</p>
+			</move-tags>
+			<move-tags to=".move.tags .outcome .a3" :+>
+				<p>World</p>
 			</move-tags>
 		</div>
 	</section>

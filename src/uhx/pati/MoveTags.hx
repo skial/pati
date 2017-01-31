@@ -15,6 +15,7 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 	
 	//
 	
+	public var prepend(get, null):Bool;
 	public var to(get, null):Null<String>;
 	
 	public function new() {
@@ -45,9 +46,11 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 	
 	public function onDataAvailable(data:Array<Phantom>):Void {
 		for (d in data) {
+			var attach = prepend ? d.insertBefore.bind(_, d.firstChild) : d.appendChild;
+			
 			for (node in childNodes) {
 				var cloned = node.clone();
-				d.appendChild(cloned);
+				attach( cloned );
 				
 			}
 			
@@ -76,6 +79,10 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 		}
 		
 		return result;
+	}
+	
+	private #if !debug inline #end function get_prepend():Bool {
+		return hasAttribute(Prepend) && !hasAttribute(Append);
 	}
 	
 }
