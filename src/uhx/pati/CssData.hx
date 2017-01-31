@@ -25,8 +25,8 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	// overloads
 	
 	public override function attached():Void {
-		if (!isCustomChild) {
-			onDataAvailable( [for (c in children) c] );
+		if (!isCustomChild && select != null) {
+			onDataAvailable( find([document], select) );
 			
 		}
 		
@@ -34,11 +34,10 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	
 	// IProcessor fields
 	
-	public function onDataAvailable(children:Array<Phantom>):Void {
-		var matches = find([window.document], select);
-		console.log( matches, prepend, firstChild );
+	public function onDataAvailable(data:Array<Phantom>):Void {
+		console.log( data, prepend, firstChild );
 		var attach = childNodes.length > 0 && prepend ? insertBefore.bind(_, firstChild) : appendChild;
-		var newNodes = asText ? [(stringify(matches):Phantom)] : matches.map( Utilities.clone.bind(_, true) );
+		var newNodes = asText ? [(stringify(data):Phantom)] : data.map( Utilities.clone.bind(_, true) );
 		
 		newNodes.map( attach );
 		

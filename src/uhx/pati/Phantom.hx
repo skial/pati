@@ -49,7 +49,7 @@ using uhx.pati.Utilities;
 		
 		if (to != null) {
 			result = Utilities.processAttribute(to, pair);
-			node.setAttribute(PendingRemoval, 'true');
+			node.setAttribute(PendingRemoval, True);
 			
 		} else {
 			if (CustomElement.knownComponents.indexOf( node.tagName.toLowerCase() ) > -1) {
@@ -69,7 +69,7 @@ using uhx.pati.Utilities;
 			
 		}
 		
-		if (remove) node.setAttribute(PendingRemoval, 'true');
+		if (remove) node.setAttribute(PendingRemoval, True);
 		
 		return result;
 	}

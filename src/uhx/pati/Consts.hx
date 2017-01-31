@@ -19,6 +19,7 @@ package uhx.pati;
 @:enum @:forward abstract SelectorConsts(String) from String to String {
 	var All = '*';
 	var Template = 'template';
+	var Scope= ':scope';
 }
 
 @:enum @:forward abstract AttributeConsts(String) from String to String {
@@ -34,6 +35,8 @@ package uhx.pati;
 	var Append = ':+';
 	var Prepend = '+:';
 	var UseText = 'use:text';
+	var True = 'true';
+	var False = 'false';
 }
 
 @:enum @:forward abstract StorageConsts(String) from String to String {

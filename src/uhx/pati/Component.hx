@@ -55,20 +55,6 @@ class Component extends uhx.pati.TemplateElement {
 	
 	public override function detachedCallback():Void {
 		super.detachedCallback();
-		console.log( 'DETACHED', this, this.parentElement );
-		setAttribute(PendingRemoval, 'true');
-		
-		
-		/*if (phase == Capturing && hasCustomChildren) {
-			for (customChild in querySelectorAll(':scope > ' + CustomElement.knownComponents.join(', '))) {
-				//if (untyped (customChild:Component).phase == Capturing) {
-					customChild.dispatchEvent( new CustomEvent( Completed, { detail:uid, bubbles:false } ) );
-					
-				//}
-				
-			}
-			
-		}*/
 		
 		detached();
 	}
@@ -158,7 +144,7 @@ class Component extends uhx.pati.TemplateElement {
 	}
 	
 	private function get_hasCustomChildren():Bool {
-		return querySelectorAll( ':scope > ' + CustomElement.knownComponents.join(', ') ).length > 0;
+		return querySelectorAll( '$Scope > ' + CustomElement.knownComponents.join(', ') ).length > 0;
 	}
 	
 	private function get_phase():EventPhase {
