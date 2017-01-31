@@ -27,6 +27,8 @@ package uhx.pati;
 	var Name = 'data-name';
 	var Prefix = 'data-prefix';
 	var To = 'to:';
+	var ShortTo = To;
+	var LongTo = 'to';
 	var Select = 'select';
 	var PendingRemoval = 'pending-remove';
 	var ScopedData = 'scoped-data';

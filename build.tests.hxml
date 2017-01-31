@@ -39,3 +39,8 @@
 
 -main uhx.pati.CssData
 -js bin/css.data.js
+
+--next
+
+-main uhx.pati.MoveTags
+-js bin/move.tags.js
