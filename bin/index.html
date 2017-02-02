@@ -207,6 +207,14 @@
 					</json-data>
 				</json-data>
 			</json-data>
+			<json-data select=".collection" each>
+				<h4><span :to="*"></span></h4>
+				<ul>
+					<json-data to:li :select=".{*}" :class="collection__{*}" scope>
+						<span :to="I am {*}"></span>
+					</json-data>
+				</ul>
+			</json-data>
 		</div>
 	</section>
 	<section class="css data">

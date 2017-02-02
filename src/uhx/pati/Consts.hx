@@ -20,6 +20,7 @@ package uhx.pati;
 	var All = '*';
 	var Template = 'template';
 	var Scope= ':scope';
+	var Root = ':root';
 }
 
 @:enum @:forward abstract AttributeConsts(String) from String to String {
@@ -39,6 +40,7 @@ package uhx.pati;
 	var UseText = 'use:text';
 	var True = 'true';
 	var False = 'false';
+	var Rescope = "scope";
 }
 
 @:enum @:forward abstract StorageConsts(String) from String to String {

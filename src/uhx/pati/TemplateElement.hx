@@ -6,6 +6,12 @@ import uhx.pati.Consts;
 
 class TemplateElement extends CustomElement {
 	
+	public static function main() {
+		var _ = new TemplateElement();
+	}
+	
+	//
+	
 	@:isVar public var root(get, null):ShadowRoot;	// Consider attaching to `this` instead of creating a shadow root.
 	@:isVar public var owner(get, null):HTMLDocument;
 	@:isVar public var template(get, null):js.html.TemplateElement;

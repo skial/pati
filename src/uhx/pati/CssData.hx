@@ -53,6 +53,10 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 		return data.map( function(n) return n.textContent ).join(' ');
 	}
 	
+	public function handleNode(node:Phantom, data:Array<Phantom>, forEach:Bool = false):Void {
+		
+	}
+	
 	// (g/s)etters
 	
 	private #if !debug inline #end function get_each():Bool {

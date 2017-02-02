@@ -11,6 +11,8 @@ class Component extends uhx.pati.TemplateElement {
 	
 	public static var hash:Hashids = new Hashids();
 	
+	//
+	
 	@:isVar public var uid(get, set):String;
 	@:isVar public var isCustomChild(get, null):Bool;
 	@:isVar public var hasCustomChildren(get, null):Bool;

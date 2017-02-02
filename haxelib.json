@@ -1,0 +1,17 @@
+{
+  "name": "pati",
+  "license": "MIT",
+  "classPath": "src",
+  "tags": ["uhu", "uhx", "html", "html5", "custom", "elements", "webcomponents"],
+  "description": "A small set of classes used to created HTML5 Custom Elements.",
+  "contributors": ["skial"],
+  "releasenote": "Initial Release",
+  "version": "0.0.1-alpha",
+  "url": "https://github.com/skial/pati",
+  "dependencies": {
+		"utest": "",
+		"regle": "",
+		"jwenn": "",
+		"tink_core": ""
+  }
+}

@@ -22,19 +22,20 @@ class Utilities {
 		
 		if (node.nodeType == Node.ELEMENT_NODE && CustomElement.knownComponents.indexOf( tagName = node.tagName.toLowerCase() ) > -1) {
 			var clone:Phantom = window.document.createElement( tagName );
-			for (a in node.attributes) if (a.name != UID) clone.setAttribute( a.name, a.value );
+			for (a in node.attributes) if (a.name != UID || a.name != PendingRemoval) clone.setAttribute( a.name, a.value );
 			for (c in node.childNodes) clone.appendChild( c.clone( deep ) );
 			node = clone;
 			
 		} else {
 			node = node.cloneNode( deep );
+			if (node.nodeType == Node.ELEMENT_NODE && node.hasAttribute(PendingRemoval)) node.removeAttribute(PendingRemoval);
 			
 		}
 		
 		return node;
 	}
 	
-	public static inline function replaceAttributes(node:Phantom, resolve:String->String):Phantom {
+	public static #if !debug inline #end function replaceAttributes(node:Phantom, resolve:String->String):Phantom {
 		// Don't iterate over a live list.
 		for (attribute in [for (a in node.attributes) a]) {
 			switch attribute.name {

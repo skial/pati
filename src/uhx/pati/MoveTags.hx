@@ -59,6 +59,10 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 		super.attached();
 	}
 	
+	public function handleNode(node:Phantom, data:Array<Phantom>, forEach:Bool = false):Void {
+		
+	}
+	
 	// override
 	
 	public override function get_phase():EventPhase {

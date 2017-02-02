@@ -12,12 +12,21 @@ import uhx.select.JsonQuery;
 
 using uhx.pati.Utilities;
 
+/**
+
+TODO
+Add `$scope` which if empty searches on the original object, or if a string selector searches
+on the resulting objects before running `select`. `$scope` will be run through `bracketInterpolate`
+before running the selector. If it fails, use default object.
+
+*/
+
 @:access(uhx.select.JsonQuery)
 class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	
 	public static var globalData:FutureTrigger<Any> = new FutureTrigger();
 	
-	public static function onGlobalJsonDataAvailable(e:CustomEvent):Void {
+	@:keep public static function onGlobalJsonDataAvailable(e:CustomEvent):Void {
 		globalData.trigger( e.detail );
 	}
 	
@@ -37,7 +46,8 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	
 	public var each(get, null):Bool;
 	public var isScoped(get, null):Bool;
-	public var select(get, null):Null<String>;
+	@:isVar public var scope(get, null):Null<String>;
+	@:isVar public var select(get, null):Null<String>;
 	
 	public function new() {
 		super();
@@ -50,8 +60,19 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 			if (!isScoped) {
 				var link = globalData.asFuture().handle( onDataAvailable );
 				
-			} else {
-				onDataAvailable( haxe.Json.parse( getAttribute(ScopedData) ) );
+			} else if (select != null) {
+				
+				if (scope == null) {
+					onDataAvailable( haxe.Json.parse( getAttribute(ScopedData) ) );
+					
+				} else {
+					globalData.asFuture().handle( function (d) {
+						var rescope = scope.bracketInterpolate( new Pair(d, (this:IProcessor<Any, Any>)) );
+						onDataAvailable( find(d, rescope.value) );
+						
+					} );
+					
+				}
 				
 			}
 			
@@ -61,57 +82,25 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	
 	//
 	
-	public function onDataAvailable(data:Any):Void {
+	@:keep public function onDataAvailable(data:Any):Void {
 		var matches = find(data, select);
 		var self:IProcessor<Any, Any> = this;
 		var pair:Pair<Any, IProcessor<Any, Any>> = new Pair(cast matches, self);
 		
 		this.replaceAttributes( Utilities.processAttribute.bind(_, new Pair(cast matches, self) ) );
 		
-		var action:Phantom->Void = each ? function(child) {
-			if (CustomElement.knownComponents.indexOf(child.tagName.toLowerCase()) == -1) {
-				var remove = false;
-				
-				for (match in matches) {
-					var pair:Pair<Any, IProcessor<Any, Any>> = new Pair(cast match, self);
-					var modified = child.clone() | pair;
-					
-					if (child != modified) {
-						child.parentElement.insertBefore(modified,child);
-						remove = true;
-						
-					}
-					
-				}
-				
-				if (remove) child.setAttribute(PendingRemoval, True);
-				
-			} else {
-				if (child.tagName.toLowerCase() == htmlFullname) {
-					child.setAttribute(ScopedData, haxe.Json.stringify(matches));
-					
-				}
-				
-			}
+		var action:Array<Phantom>->Void = each ? function(children) {
+			for (match in matches) for (child in children) handleNode(child, match, true);
 			
-		} : function(child) {
-			if (CustomElement.knownComponents.indexOf(child.tagName.toLowerCase()) == -1) {
-				(child:Phantom) | pair | child;
-				
-			} else {
-				if (child.tagName.toLowerCase() == htmlFullname) {
-					child.setAttribute(ScopedData, haxe.Json.stringify(matches));
-					
-				}
-				
-			}
+		} : function(children) {
+			for (child in children) handleNode(child, matches);
 			
 		}
 		
 		// Only interested if it has elements as children.
 		if (children.length > 0) {
 			// Don't iterate over a live list.
-			for (child in [for (c in children) c]) action( child );
+			action( [for (c in children) c] );
 			
 			for (node in querySelectorAll('$Scope [$PendingRemoval="$True"]')) {
 				(node:Phantom).remove();
@@ -150,9 +139,39 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	}
 	
 	public function find(data:Any, selector:String):Array<Any> {
-		if (selector == null || selector.length == 0) return [];
-		var results = JsonQuery.find( data, selector );
+		var results = [];
+		if (selector == null || selector.length == 0) return results;
+		results = cast JsonQuery.find( data, selector );
 		return cast results;
+	}
+	
+	public function handleNode(node:Phantom, data:Any, forEach:Bool = false):Void {
+		var pair:Pair<Any, IProcessor<Any, Any>> = new Pair(data, (this:IProcessor<Any, Any>));
+		
+		if (CustomElement.knownComponents.indexOf(node.tagName.toLowerCase()) == -1) {
+			var modified = node.clone() | pair;
+			
+			if (forEach) {
+				appendChild(modified);
+				
+			} else {
+				modified | node;
+				
+			}
+			
+			if (modified.nodeType == Node.ELEMENT_NODE) modified.replaceAttributes( Utilities.processAttribute.bind(_, pair) );
+			
+			node.setAttribute(PendingRemoval, True);
+			
+		} else {
+			if (node.tagName.toLowerCase() == htmlFullname) {
+				node.setAttribute(ScopedData, haxe.Json.stringify(data));
+				node.replaceAttributes( Utilities.processAttribute.bind(_, pair) );
+				
+			}
+			
+		}
+		
 	}
 	
 	//
@@ -174,8 +193,18 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 		return select;
 	}
 	
+	private #if !debug inline #end function get_scope():Null<String> {
+		if (hasAttribute(Rescope)) {
+			scope = getAttribute(Rescope);
+			if (scope == null || scope == '') scope = Root;
+			
+		}
+		
+		return scope;
+	}
+	
 	private override function get_ignoredAttributes():Array<String> {
-		return super.get_ignoredAttributes().concat( [Select, ScopedData, Each] );
+		return super.get_ignoredAttributes().concat( [Select, ScopedData, Each, Rescope] );
 	}
 	
 }

@@ -45,23 +45,15 @@ using uhx.pati.Utilities;
 	public static #if !debug inline #end function convertNode<D, S>(node:Phantom, pair:Pair<D, IProcessor<D, S>>):Phantom {
 		var to = node.to;
 		var result = node;
-		var remove = false;
 		
 		if (to != null) {
 			result = Utilities.processAttribute(to, pair);
 			node.setAttribute(PendingRemoval, True);
 			
 		} else {
-			for (child in [for (c in node.children) c]) {
-				insertBeforeElement( convertNode( child, pair ), child );
-				
-			}
-			
-			node.replaceAttributes( Utilities.processAttribute.bind(_, pair) );
+			for (child in [for (c in node.children) c]) pair.b.handleNode(child, pair.a);
 			
 		}
-		
-		if (remove) node.setAttribute(PendingRemoval, True);
 		
 		return result;
 	}
