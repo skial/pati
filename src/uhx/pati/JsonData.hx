@@ -12,15 +12,6 @@ import uhx.select.JsonQuery;
 
 using uhx.pati.Utilities;
 
-/**
-
-TODO
-Add `$scope` which if empty searches on the original object, or if a string selector searches
-on the resulting objects before running `select`. `$scope` will be run through `bracketInterpolate`
-before running the selector. If it fails, use default object.
-
-*/
-
 @:access(uhx.select.JsonQuery)
 class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	
