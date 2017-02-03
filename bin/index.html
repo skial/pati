@@ -176,6 +176,30 @@
 					</p>
 				</p>
 			</p>
+			<h4>a1</h4>
+			<ul>
+				<li>I am foo a1</li>
+			</ul>
+			<h4>a2</h4>
+			<ul>
+				<li>I am foo a2</li>
+			</ul>
+			<h4>b1</h4>
+			<ul>
+				<li>I am foo b1</li>
+			</ul>
+			<h4>b2</h4>
+			<ul>
+				<li>I am foo b2</li>
+			</ul>
+			<h4>c1</h4>
+			<ul>
+				<li>I am foo c1</li>
+			</ul>
+			<h4>c2</h4>
+			<ul>
+				<li>I am foo c2</li>
+			</ul>
 		</div>
 		<div class="outcome">
 			<div>
@@ -210,7 +234,7 @@
 			<json-data select=".collection" each>
 				<h4><span :to="*"></span></h4>
 				<ul>
-					<json-data to:li :select=".{*}" :class="collection__{*}" scope>
+					<json-data to:li :select=".{*}" :class="collection__{*}" retarget>
 						<span :to="I am {*}"></span>
 					</json-data>
 				</ul>

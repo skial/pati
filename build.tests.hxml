@@ -12,6 +12,7 @@
 
 --each
 
+-dce full
 -main Main
 -js bin/spec.js
 

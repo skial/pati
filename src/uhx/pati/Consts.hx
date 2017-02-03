@@ -40,7 +40,7 @@ package uhx.pati;
 	var UseText = 'use:text';
 	var True = 'true';
 	var False = 'false';
-	var Rescope = "scope";
+	var Retarget = "retarget";
 }
 
 @:enum @:forward abstract StorageConsts(String) from String to String {

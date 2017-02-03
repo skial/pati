@@ -37,8 +37,8 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	
 	public var each(get, null):Bool;
 	public var isScoped(get, null):Bool;
-	@:isVar public var scope(get, null):Null<String>;
 	@:isVar public var select(get, null):Null<String>;
+	@:isVar public var retarget(get, null):Null<String>;
 	
 	public function new() {
 		super();
@@ -53,13 +53,13 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 				
 			} else if (select != null) {
 				
-				if (scope == null) {
+				if (retarget == null) {
 					onDataAvailable( haxe.Json.parse( getAttribute(ScopedData) ) );
 					
 				} else {
 					globalData.asFuture().handle( function (d) {
-						var rescope = scope.bracketInterpolate( new Pair(d, (this:IProcessor<Any, Any>)) );
-						onDataAvailable( find(d, rescope.value) );
+						var selector = retarget.bracketInterpolate( new Pair(d, (this:IProcessor<Any, Any>)) );
+						onDataAvailable( find(d, selector.value) );
 						
 					} );
 					
@@ -184,18 +184,18 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 		return select;
 	}
 	
-	private #if !debug inline #end function get_scope():Null<String> {
-		if (hasAttribute(Rescope)) {
-			scope = getAttribute(Rescope);
-			if (scope == null || scope == '') scope = Root;
+	private #if !debug inline #end function get_retarget():Null<String> {
+		if (hasAttribute(Retarget)) {
+			retarget = getAttribute(Retarget);
+			if (retarget == null || retarget == '') retarget = Root;
 			
 		}
 		
-		return scope;
+		return retarget;
 	}
 	
 	private override function get_ignoredAttributes():Array<String> {
-		return super.get_ignoredAttributes().concat( [Select, ScopedData, Each, Rescope] );
+		return super.get_ignoredAttributes().concat( [Select, ScopedData, Each, Retarget] );
 	}
 	
 }
