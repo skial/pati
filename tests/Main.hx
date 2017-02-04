@@ -46,7 +46,7 @@ class Main {
 	
 }
 
-private class SectionRunner {
+@:keep private class SectionRunner {
 	
 	public var name:String;
 	public var outcome:Phantom;
@@ -79,26 +79,61 @@ private class SectionRunner {
 	}
 	
 	public function testChildren() {
-		var pairs = [];
+		var check:Phantom->Phantom->Void = null;
+		var loop:Phantom->Phantom->Void = null;
 		
-		for (i in 0...expected.children.length) {
-			pairs.push( [expected.children[i], outcome.children[i]] );
+		check = function(e, o) {
+			Assert.equals( e.nodeType, o.nodeType );
+			Assert.equals( e.nodeName, o.nodeName );
 			
-		}
-		
-		for (pair in pairs) {
-			var a = pair[0];
-			var b = pair[1];
+			for (attribute in e.attributes) {
+				Assert.isTrue( o.hasAttribute(attribute.name) );
+				Assert.equals( attribute.value, o.getAttribute(attribute.name) );
+				
+			}
 			
-			Assert.equals( a.nodeType, b.nodeType );
-			Assert.equals( a.nodeName, b.nodeName );
+			Assert.equals( e.children.length, o.children.length );
 			
-			for (attribute in a.attributes) {
-				Assert.isTrue( b.hasAttribute(attribute.name) );
+			for (i in 0...e.children.length) {
+				loop( e.children[i], o.children[i] );
 				
 			}
 			
 		}
+		
+		loop = function loop(e, o) {
+			//var pairs = [];
+			
+			for (i in 0...e.children.length) {
+				//pairs.push( [e.children[i], o.children[i]] );
+				check( e.children[i], o.children[i] );
+				
+			}
+			
+			/*for (pair in pairs) {
+				var a = pair[0];
+				var b = pair[1];
+				
+				Assert.equals( a.nodeType, b.nodeType );
+				Assert.equals( a.nodeName, b.nodeName );
+				
+				for (attribute in a.attributes) {
+					Assert.isTrue( b.hasAttribute(attribute.name) );
+					
+				}
+				
+				Assert.equals( e.children.length, o.children.length );
+				
+				for (i in 0...e.children.length) {
+					loop( e.children[i], o.children[i] );
+					
+				}
+				
+			}*/
+			
+		}
+		
+		loop(expected, outcome);
 		
 	}
 	
