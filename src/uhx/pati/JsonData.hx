@@ -159,9 +159,9 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 			
 		} else {
 			if (node.tagName.toLowerCase() == htmlFullname) {
-				for (attribute in [for (a in node.attributes) a]) if ([':select'].indexOf(attribute.name) > -1) {
-					node.setAttribute('select', Utilities.processAttribute( attribute.value, pair ) );
-					node.removeAttribute(':select');
+				for (attribute in [for (a in node.attributes) a]) if (['$Process$Select'].indexOf(attribute.name) > -1) {
+					node.setAttribute(Select, Utilities.processAttribute( attribute.value, pair ) );
+					node.removeAttribute('$Process$Select');
 					
 				}
 				
