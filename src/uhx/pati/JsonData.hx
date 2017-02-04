@@ -150,14 +150,16 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 				
 			}
 			
-			if (modified.nodeType == Node.ELEMENT_NODE) modified.replaceAttributes( Utilities.processAttribute.bind(_, pair) );
+			if (modified.nodeType == Node.ELEMENT_NODE) {
+				modified.replaceAttributes( Utilities.processAttribute.bind(_, pair) );
+				
+			}
 			
 			node.setAttribute(PendingRemoval, True);
 			
 		} else {
 			if (node.tagName.toLowerCase() == htmlFullname) {
 				node.setAttribute(ScopedData, haxe.Json.stringify(data));
-				node.replaceAttributes( Utilities.processAttribute.bind(_, pair) );
 				
 			}
 			
