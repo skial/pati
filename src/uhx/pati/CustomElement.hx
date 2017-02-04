@@ -11,8 +11,6 @@ class CustomElement extends Element {
 	@:isVar public var htmlPrefix(get, null):String;
 	@:isVar public var htmlFullname(get, set):String;
 	
-	private var self(get, null):Element;
-	
 	public function new() {
 		if (knownComponents.indexOf( htmlFullname ) == -1) {
 			knownComponents.push( htmlFullname );
@@ -47,10 +45,6 @@ class CustomElement extends Element {
 	}
 	
 	//
-	
-	private function get_self():Element {
-		return this;
-	}
 	
 	private function get_htmlPrefix():String {
 		return 'hx';

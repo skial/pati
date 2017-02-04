@@ -34,8 +34,6 @@ class TemplateElement extends CustomElement {
 	
 	//
 	
-	//
-	
 	private function get_owner():HTMLDocument {
 		if (owner == null) owner = window.document.currentScript.ownerDocument;
 		return owner;
@@ -73,10 +71,6 @@ class TemplateElement extends CustomElement {
 		}
 		
 		return htmlName;
-	}
-	
-	private override function get_self():Element {
-		return this;
 	}
 	
 }
