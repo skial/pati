@@ -167,15 +167,7 @@
 					baz is 3 years old.
 				</li>
 			</ul>
-			<p class="a1">
-				a1
-				<p class="a2">
-					a2
-					<p class="b1">
-						b1
-					</p>
-				</p>
-			</p>
+			<div class="a1">a1<div class="a2">a2<div class="b1">b1</div></div></div>
 			<h4>a1</h4>
 			<ul>
 				<li>I am foo a1</li>
@@ -222,11 +214,11 @@
 					<span :to="{.name} is {.age} years old."></span>
 				</li>
 			</json-data>
-			<json-data select=".collection" :class=":first-child" to:p>
+			<json-data select=".collection" :class=":first-child" to:div>
 				<span :to=":first-child"></span>
-				<json-data select=":nth-child(n+2)" :class=":first-child" to:p>
+				<json-data select=":nth-child(n+2)" :class=":first-child" to:div>
 					<span :to=":first-child"></span>
-					<json-data select=":nth-child(n+2)" :class=":first-child" to:p>
+					<json-data select=":nth-child(n+2)" :class=":first-child" to:div>
 						<span :to=":first-child"></span>
 					</json-data>
 				</json-data>
