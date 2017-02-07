@@ -12,7 +12,6 @@ class TemplateElement extends CustomElement {
 	
 	//
 	
-	@:isVar public var root(get, null):ShadowRoot;	// Consider attaching to `this` instead of creating a shadow root.
 	@:isVar public var owner(get, null):HTMLDocument;
 	@:isVar public var template(get, null):js.html.TemplateElement;
 	
@@ -42,11 +41,6 @@ class TemplateElement extends CustomElement {
 	private function get_template():js.html.TemplateElement {
 		if (template == null) template = cast owner.querySelector(Template);
 		return template;
-	}
-	
-	private function get_root():ShadowRoot {
-		if (root == null) root = this.createShadowRoot();
-		return root;
 	}
 	
 	private override function get_htmlPrefix():String {
