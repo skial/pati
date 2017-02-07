@@ -9,14 +9,16 @@
 		}
 		
 		.pass,
+		.outcome > :not(dom-dump),
 		.outcome > :not(css-data),
 		.outcome > :not(json-data),
 		.outcome > :not(move-tags),
 		.outcome > :not(spec-bubbling),
 		.outcome > :not(spec-capturing) {
-			background: lime;
+			background: yellow;
 		}
 		.error,
+		.outcome > dom-dump,
 		.outcome > css-data,
 		.outcome > json-data,
 		.outcome > move-tags,
@@ -72,6 +74,8 @@
 	<link href="json.data.html" rel="import" />
 	<link href="css.data.html" rel="import" />
 	<link href="move.tags.html" rel="import" />
+	<link href="template.html" rel="import" />
+	<link href="article.html" rel="import" />
 </head>
 <body>
 	<h1>Pati Component Tests</h1>
@@ -332,6 +336,53 @@
 			<move-tags to=".move.tags .outcome .a3" :+>
 				<p>World</p>
 			</move-tags>
+		</div>
+	</section>
+	<section class="template insertion">
+		<h2>Template Insertion</h2>
+		<div class="expected">
+			<ul class="template dumped">
+				<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>
+			</ul>
+			<div class="sub"></div>
+			<ul class="template dumped">
+				<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>
+			</ul>
+			<div class="sub">
+				<ul class="template dumped">
+					<li>1</li>
+					<li>2</li>
+					<li>3</li>
+					<li>4</li>
+					<li>5</li>
+				</ul>
+				<div class="sub"></div>
+			</div>
+			<h3>Article Title</h3>
+			<ul class="template dumped">
+				<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>
+			</ul>
+			<div class="sub"></div>
+			<p>Hello World</p>
+		</div>
+		<div class="outcome">
+			<dom-dump></dom-dump>
+			<dom-dump id="parent">
+				<dom-dump id="sub"></dom-dump>
+			</dom-dump>
+			<pati-article></pati-article>
 		</div>
 	</section>
 </body>

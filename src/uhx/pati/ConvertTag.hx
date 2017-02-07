@@ -40,11 +40,11 @@ class ConvertTag<D, S> extends Staticise {
 							
 						}
 						
-					for (node in this.childNodes) replacement.appendChild( (node:Phantom).clone() );
-					this.parentElement.insertBefore(replacement, this);
+					for (node in childNodes) replacement.appendChild( (node:Phantom).clone() );
+					parentElement.insertBefore(replacement, this);
 						
 				} else {
-					for (node in this.childNodes) this.parentElement.insertBefore( (node:Phantom).clone(), this );
+					for (node in childNodes) parentElement.insertBefore( (node:Phantom).clone(), this );
 					
 				}
 			

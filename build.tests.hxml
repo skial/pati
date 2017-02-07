@@ -6,8 +6,10 @@
 -lib jwenn
 #-lib electron
 -lib tink_core
+#-lib tink_runloop
 
 -debug
+-D runtime
 #-dce full
 
 --each

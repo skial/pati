@@ -44,7 +44,7 @@ class Component extends uhx.pati.TemplateElement {
 		uid = stampUid( this );
 		setAttribute(Phase, phase);
 		
-		if (isCustomChild) this.parentElement.dispatchEvent( new CustomEvent(ChildAdded, { detail:uid, bubbles:true } ) );
+		if (isCustomChild) parentElement.dispatchEvent( new CustomEvent(ChildAdded, { detail:uid, bubbles:true } ) );
 		if (phase == Bubbling && !hasCustomChildren) {
 			attached();
 			
@@ -74,7 +74,7 @@ class Component extends uhx.pati.TemplateElement {
 	public function detached():Void {
 		for (key in events.keys()) {
 			var event = events.get(key);
-			this.removeEventListener(key, event.method);
+			removeEventListener(key, event.method);
 		}
 		
 	}
@@ -125,11 +125,11 @@ class Component extends uhx.pati.TemplateElement {
 	//
 	
 	private #if !debug inline #end function get_uid():String {
-		if (!this.hasAttribute(UID) && uid == null) {
+		if (!hasAttribute(UID) && uid == null) {
 			uid = '';
 			
-		} else if (this.hasAttribute(UID)) {
-			uid = this.getAttribute(UID);
+		} else if (hasAttribute(UID)) {
+			uid = getAttribute(UID);
 			
 		}
 		
@@ -137,7 +137,7 @@ class Component extends uhx.pati.TemplateElement {
 	}
 	
 	private #if !debug inline #end function set_uid(v:String):String {
-		this.setAttribute(UID, v);
+		setAttribute(UID, v);
 		return uid = v;
 	}
 	

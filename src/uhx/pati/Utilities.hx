@@ -1,9 +1,9 @@
 package uhx.pati;
 
 import js.html.*;
+import tink.core.*;
 import js.Browser.*;
 import haxe.ds.IntMap;
-import tink.core.Pair;
 import uhx.pati.Consts;
 import uhx.pati.CustomElement;
 
@@ -11,6 +11,41 @@ using StringTools;
 using uhx.pati.Utilities;
 
 class Utilities {
+	
+	// Checks for differences between the custom element is to the original template.
+	public static function diff(a:Phantom, t:TemplateElement):Array<Phantom> {
+		var results = [];
+		var ac = [for (n in a.children) n];
+		var tc = t.content.children;
+		
+		if (ac.length > 0 && tc.length > 0) for (a in ac) {
+			var exists = false;
+			
+			for (n in tc) {
+				if (CustomElement.knownComponents.indexOf( n.nodeName.toLowerCase() ) == -1) {
+					if (!exists) if (exists = n.isEqualNode(a)) break;
+					
+				} else {
+					var _t:TemplateElement = untyped document.createElement(n.nodeName).template;
+					// Clean the template currently being checked of all `<content>` tags
+					// as a nested custom element may have been already resolved, having its
+					// `content` tags removed, returning a false positive.
+					for (n in _t.content.querySelectorAll('content')) (n:Phantom).remove();
+					var _tc:HTMLCollection = _t.content.children;
+					
+					for (n in _tc) if (!exists) if(exists = n.isEqualNode(a)) break;
+					if (exists) break;
+					
+				}
+				
+			}
+			
+			if (!exists) results.push( a );
+				
+		}
+		
+		return results;
+	}
 	
 	/*
 	 *	`node.cloneNode` and `window.document.importNode`, where the node to be cloned
@@ -22,7 +57,8 @@ class Utilities {
 		
 		if (node.nodeType == Node.ELEMENT_NODE && CustomElement.knownComponents.indexOf( tagName = node.tagName.toLowerCase() ) > -1) {
 			var clone:Phantom = window.document.createElement( tagName );
-			for (a in node.attributes) if (a.name != UID || a.name != PendingRemoval) clone.setAttribute( a.name, a.value );
+			// Use `(g/s)etAttributeNode` instead of `(g/s)etAttribute` to avoid invalid value errors.
+			for (a in node.attributes) if (a.name != UID || a.name != PendingRemoval) clone.setAttributeNode(untyped node.getAttributeNode(a.name).cloneNode(true));//( a.name, a.value );
 			for (c in node.childNodes) clone.appendChild( c.clone( deep ) );
 			node = clone;
 			
