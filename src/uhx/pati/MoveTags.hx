@@ -33,9 +33,18 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 	// IProcessor
 	
 	public function find(data:Array<Phantom>, selector:String):Array<Phantom> {
-		var results = [];
+		var results:Array<Phantom> = [];
 		
-		for (d in data) for (n in d.querySelectorAll(selector)) results.push( (n:Phantom) );
+		for (d in data) {
+			for (n in d.querySelectorAll(selector)) {
+				var node:Phantom = n;
+				var exists = false;
+				for (r in results) if (exists = node.isEqualNode(r)) break;
+				if (!exists) results.push( node );
+				
+			}
+			
+		}
 		
 		return results;
 	}
@@ -46,9 +55,10 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 	
 	public function onDataAvailable(data:Array<Phantom>):Void {
 		for (d in data) {
-			var attach = prepend ? d.insertBefore.bind(_, d.firstChild) : d.appendChild;
+			// Possible bug with `bind` on extern javascript methods?
+			var attach = prepend ? function(n) d.insertBefore(n, d.firstElementChild) : function(n) d.appendChild(n);
 			
-			for (node in childNodes) {
+			for (node in [for (c in childNodes) c]) {
 				var cloned = node.clone();
 				attach( cloned );
 				

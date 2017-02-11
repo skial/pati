@@ -4,6 +4,7 @@ import js.html.*;
 import js.Browser.*;
 import utest.Assert;
 import utest.Runner;
+import tink.core.Pair;
 import utest.ui.Report;
 import uhx.pati.Phantom;
 import utest.TestFixture;
@@ -17,6 +18,18 @@ using StringTools;
 	public var Expected = '.expected';
 	public var Outcome = '.outcome';
 	public var Section = 'section';
+}
+
+@:forward @:forwardStatics private abstract TestError(Pair<Phantom, Phantom>) from Pair<Phantom, Phantom> to Pair<Phantom, Phantom> {
+	
+	public inline function new(a, b) {
+		this = new Pair(a, b);
+	}
+	
+	@:to public function toString():String {
+		return 'Expected `${this.a.outerHTML}` but got `${this.b.outerHTML}`.';
+	}
+	
 }
 
 class Main {
@@ -83,8 +96,9 @@ class Main {
 		var loop:Phantom->Phantom->Void = null;
 		
 		check = function(e, o) {
-			Assert.equals( e.nodeType, o.nodeType );
-			Assert.equals( e.nodeName, o.nodeName );
+			if (o == null) throw '`o` can not be null.';
+			Assert.equals( e.nodeType, o.nodeType, o.outerHTML );
+			Assert.equals( e.nodeName, o.nodeName, o.outerHTML );
 			
 			for (attribute in e.attributes) {
 				Assert.isTrue( o.hasAttribute(attribute.name) );
@@ -92,7 +106,7 @@ class Main {
 				
 			}
 			
-			Assert.equals( e.children.length, o.children.length );
+			Assert.equals( e.children.length, o.children.length, new TestError(e, o) );
 			
 			for (i in 0...e.children.length) {
 				loop( e.children[i], o.children[i] );
@@ -102,34 +116,19 @@ class Main {
 		}
 		
 		loop = function loop(e, o) {
-			//var pairs = [];
+			Assert.notNull( o );
+			Assert.equals( e.children.length, o.children.length, new TestError(e, o) );
 			
 			for (i in 0...e.children.length) {
-				//pairs.push( [e.children[i], o.children[i]] );
-				check( e.children[i], o.children[i] );
+				try {
+					check( e.children[i], o.children[i] );
+					
+				} catch (error:Any) {
+					console.log( new TestError(e, o).toString(), error );
+					
+				}
 				
 			}
-			
-			/*for (pair in pairs) {
-				var a = pair[0];
-				var b = pair[1];
-				
-				Assert.equals( a.nodeType, b.nodeType );
-				Assert.equals( a.nodeName, b.nodeName );
-				
-				for (attribute in a.attributes) {
-					Assert.isTrue( b.hasAttribute(attribute.name) );
-					
-				}
-				
-				Assert.equals( e.children.length, o.children.length );
-				
-				for (i in 0...e.children.length) {
-					loop( e.children[i], o.children[i] );
-					
-				}
-				
-			}*/
 			
 		}
 		

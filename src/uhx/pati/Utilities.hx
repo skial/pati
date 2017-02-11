@@ -12,36 +12,78 @@ using uhx.pati.Utilities;
 
 class Utilities {
 	
-	// Checks for differences between the custom element is to the original template.
-	public static function diff(a:Phantom, t:TemplateElement):Array<Phantom> {
+	public static function diff(dom:Phantom, template:TemplateElement):Array<Phantom> {
 		var results = [];
-		var ac = [for (n in a.children) n];
-		var tc = t.content.children;
+		template = cast template.cloneNode(true);
+		var contents = template.content.querySelectorAll(Content);
 		
-		if (ac.length > 0 && tc.length > 0) for (a in ac) {
-			var exists = false;
+		if (contents.length > 0) {
+			for (n in contents) (n:Phantom).remove();
 			
-			for (n in tc) {
-				if (CustomElement.knownComponents.indexOf( n.nodeName.toLowerCase() ) == -1) {
-					if (!exists) if (exists = n.isEqualNode(a)) break;
-					
-				} else {
-					var _t:TemplateElement = untyped document.createElement(n.nodeName).template;
-					// Clean the template currently being checked of all `<content>` tags
-					// as a nested custom element may have been already resolved, having its
-					// `content` tags removed, returning a false positive.
-					for (n in _t.content.querySelectorAll('content')) (n:Phantom).remove();
-					var _tc:HTMLCollection = _t.content.children;
-					
-					for (n in _tc) if (!exists) if(exists = n.isEqualNode(a)) break;
-					if (exists) break;
-					
-				}
+			results = diffChildren( [for (n in dom.children) n], [for (n in template.content.children) n] );
+			
+		} 
+		
+		return results;
+	}
+	
+	// Checks for differences between the custom element is to the original template.
+	public static function diffChildren(dom:Array<Phantom>, template:Array<Phantom>):Array<Phantom> {
+		var results = [];
+		var domIndex = 0;
+		var customElements = CustomElement.knownComponents;
+		//console.log( dom, template );
+		while (domIndex < dom.length) {
+			var match = false;
+			var templateIndex = 0;
+			var original = dom[domIndex];
+			var child = original;
+			
+			if (child.nodeName.toLowerCase() == Content) {
+				domIndex++;
+				continue;
+			}
+			
+			if (child.querySelectorAll(Content).length > 0) {
+				var clone = clone( child );
+				for (n in clone.querySelectorAll(Content)) (n:Phantom).remove();
+				child = clone;
 				
 			}
 			
-			if (!exists) results.push( a );
+			while (templateIndex < template.length) {
+				var node = template[templateIndex];
 				
+				if (customElements.indexOf( node.nodeName.toLowerCase() ) == -1) {
+					// Normal node, hopefully.
+					if (match = node.isEqualNode(child)) {
+						templateIndex = template.length;
+						break;
+					}
+					
+				} else {
+					// Known custom element.
+					var custom:TemplateElement = untyped document.createElement( node.nodeName ).template;
+					custom = cast custom.cloneNode(true);
+					// Remove `<content>` tags from template.
+					for (n in custom.content.querySelectorAll(Content)) (n:Phantom).remove();
+					var sub = diffChildren( [child], [for (n in custom.content.children) n] );
+					
+					if (match = sub.length == 0) {
+						templateIndex = template.length;
+						break;
+					}
+					
+				}
+				
+				templateIndex++;
+				
+			}
+			
+			if (!match) results.push( child );
+			
+			domIndex++;
+			
 		}
 		
 		return results;
@@ -58,7 +100,7 @@ class Utilities {
 		if (node.nodeType == Node.ELEMENT_NODE && CustomElement.knownComponents.indexOf( tagName = node.tagName.toLowerCase() ) > -1) {
 			var clone:Phantom = window.document.createElement( tagName );
 			// Use `(g/s)etAttributeNode` instead of `(g/s)etAttribute` to avoid invalid value errors.
-			for (a in node.attributes) if (a.name != UID || a.name != PendingRemoval) clone.setAttributeNode(untyped node.getAttributeNode(a.name).cloneNode(true));//( a.name, a.value );
+			for (a in node.attributes) if (a.name != UID || a.name != PendingRemoval) clone.setAttributeNode(untyped node.getAttributeNode(a.name).cloneNode(true));
 			for (c in node.childNodes) clone.appendChild( c.clone( deep ) );
 			node = clone;
 			

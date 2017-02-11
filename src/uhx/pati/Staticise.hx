@@ -19,19 +19,23 @@ class Staticise extends Component {
 	// overrides
 	
 	public override function attachedCallback():Void {
-		var contents = querySelectorAll('content');
-		var differences = contents.length > 0 ? this.diff( template ) : [];
+		var contents = querySelectorAll('$Content:not([$PendingRemoval="$True"])');
 		
-		// Move unknown elements based on the original template into any `<content>`
-		// if they exist. Then remove any existing `<content>` tags.
-		// TODO support `select` attribute.
-		for (node in contents) {
-			var content:ContentElement = cast node;
-			for (difference in differences) content.parentElement.insertBefore(difference, content);
-			content.remove();
+		if (contents.length > 0) {
+			var differences = this.diff( template );
+			
+			for (difference in differences) for (node in contents) if (!difference.contains(node)) {
+				var content:ContentElement = cast node;
+				content.parentElement.insertBefore(difference, content);
+				content.setAttribute(PendingRemoval, True);
+				break;
+				
+			}
 			
 		}
 		
+		for (n in contents) (n:Phantom).remove();
+					
 		super.attachedCallback();
 	}
 	

@@ -101,12 +101,12 @@ class Component extends uhx.pati.TemplateElement {
 	// Custom event handlers
 	
 	public function onCustomChildAdded(?e:CustomEvent):Void {
-		console.log( htmlFullname, e );
+		//console.log( htmlFullname, e );
 		e.stopPropagation();
 	}
 	
 	public function onCustomChildFinished(?e:CustomEvent):Void {
-		console.log( htmlFullname, e );
+		//console.log( htmlFullname, e );
 		e.stopPropagation();
 		var children:Array<Element> = [for (node in querySelectorAll('[UID="${e.detail}"]')) cast node];
 		
@@ -116,7 +116,7 @@ class Component extends uhx.pati.TemplateElement {
 	}
 	
 	public function onCustomParentFinished(?e:CustomEvent):Void {
-		console.log( htmlFullname, e );
+		//console.log( htmlFullname, e );
 		e.stopPropagation();
 		
 		created();
@@ -142,11 +142,11 @@ class Component extends uhx.pati.TemplateElement {
 	}
 	
 	private #if !debug inline #end function get_isCustomChild():Bool {
-		return window.document.querySelectorAll('[$UID] > $htmlFullname[$UID="$uid"]').length > 0;
+		return window.document.querySelectorAll('[$UID] $htmlFullname[$UID="$uid"]').length > 0;
 	}
 	
 	private #if !debug inline #end function get_hasCustomChildren():Bool {
-		return querySelectorAll( '$Scope > ' + CustomElement.knownComponents.join(', ') ).length > 0;
+		return querySelectorAll( CustomElement.knownComponents.map(function(v) return '$Scope $v').join(', ') ).length > 0;
 	}
 	
 	private function get_phase():EventPhase {

@@ -18,9 +18,10 @@ package uhx.pati;
 
 @:enum @:forward abstract SelectorConsts(String) from String to String {
 	var All = '*';
-	var Template = 'template';
-	var Scope= ':scope';
 	var Root = ':root';
+	var Scope= ':scope';
+	var Content = 'content';
+	var Template = 'template';
 }
 
 @:enum @:forward abstract AttributeConsts(String) from String to String {

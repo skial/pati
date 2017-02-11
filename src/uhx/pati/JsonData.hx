@@ -93,11 +93,6 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 			// Don't iterate over a live list.
 			action( [for (c in children) c] );
 			
-			for (node in querySelectorAll('$Scope [$PendingRemoval="$True"]')) {
-				(node:Phantom).remove();
-				
-			}
-			
 		} else {
 			appendChild( (matches.map( stringify ).join(' '):Phantom) );
 			

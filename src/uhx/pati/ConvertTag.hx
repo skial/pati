@@ -28,28 +28,30 @@ class ConvertTag<D, S> extends Staticise {
 	//
 	
 	public override function attached():Void {
-		if (!hasAttribute(PendingRemoval)) {
-			if (to != null) {
-				var replacement = window.document.createElement(to);
-				
-				for (attribute in attributes) switch attribute.name {
-					case _.startsWith(To) || ignoredAttributes.indexOf(_) > -1 => false:
-						replacement.setAttribute( attribute.name, attribute.value );
-						
-						case _:
-							
-						}
-						
-					for (node in childNodes) replacement.appendChild( (node:Phantom).clone() );
-					parentElement.insertBefore(replacement, this);
-						
-				} else {
-					for (node in childNodes) parentElement.insertBefore( (node:Phantom).clone(), this );
-					
-				}
+		for (node in querySelectorAll('$Scope [$PendingRemoval="$True"]')) {
+			(node:Phantom).remove();
 			
 		}
 		
+		if (to != null) {
+			var replacement = window.document.createElement(to);
+			
+			for (attribute in attributes) switch attribute.name {
+				case _.startsWith(To) || ignoredAttributes.indexOf(_) > -1 => false:
+					replacement.setAttribute( attribute.name, attribute.value );
+					
+				case _:
+						
+			}
+				
+			for (node in [for (n in childNodes) (n:Phantom)]) replacement.appendChild( node );
+			parentElement.insertBefore(replacement, this);
+				
+		} else {
+			for (node in [for (n in childNodes) (n:Phantom)]) parentElement.insertBefore( node, this );
+			
+		}
+			
 		super.attached();
 	}
 	
