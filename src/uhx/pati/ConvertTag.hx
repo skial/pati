@@ -33,7 +33,7 @@ class ConvertTag<D, S> extends Staticise {
 			
 		}
 		
-		if (to != null) {
+		if (parentElement != null) if (to != null) {
 			var replacement = window.document.createElement(to);
 			
 			for (attribute in attributes) switch attribute.name {

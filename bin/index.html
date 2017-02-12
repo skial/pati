@@ -74,8 +74,9 @@
 	<link href="json.data.html" rel="import" />
 	<link href="css.data.html" rel="import" />
 	<link href="move.tags.html" rel="import" />
-	<link href="dom-dump.html" rel="import" />
-	<link href="pati-article.html" rel="import" />
+	<link href="dom.dump.html" rel="import" />
+	<link href="pati.article.html" rel="import" />
+	<link href="pati.body.html" rel="import" />
 </head>
 <body>
 	<h1>Pati Component Tests</h1>
@@ -443,6 +444,22 @@
 					Test Quote
 				</blockquote>
 			</div>
+			<div class="a4">
+				<h3>Article Title</h3>
+				<ul class="template dumped">
+					<li>1</li>
+					<li>2</li>
+					<li>3</li>
+					<li>4</li>
+					<li>5</li>
+				</ul>
+				<div class="sub"></div>
+				<p>Hello World</p>
+				<blockquote>Test Quote for A4.</blockquote>
+				<p>Article Body</p>
+				<img />
+				<p>Article Conclusion</p>
+			</div>
 		</div>
 		<div class="outcome">
 			<div class="a1">
@@ -462,6 +479,14 @@
 					<blockquote>
 						Test Quote
 					</blockquote>
+				</pati-article>
+			</div>
+			<div class="a4">
+				<pati-article>
+					<blockquote>Test Quote for A4.</blockquote>
+					<pati-body>
+						<img />
+					</pati-body>
 				</pati-article>
 			</div>
 		</div>

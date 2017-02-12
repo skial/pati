@@ -59,7 +59,7 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 			var attach = prepend ? function(n) d.insertBefore(n, d.firstElementChild) : function(n) d.appendChild(n);
 			
 			for (node in [for (c in childNodes) c]) {
-				var cloned = node.clone();
+				var cloned = node;
 				attach( cloned );
 				
 			}
