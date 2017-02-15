@@ -5,13 +5,14 @@
 -lib regle
 -lib jwenn
 #-lib electron
+-lib thx.unit
 -lib tink_core
-#-lib closure
+-lib closure
 
 -dce full
 
-#-D closure_advanced
-#-D closure_overwrite
+-D closure_advanced
+-D closure_overwrite
 
 --each
 

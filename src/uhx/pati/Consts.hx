@@ -42,6 +42,7 @@ package uhx.pati;
 	var True = 'true';
 	var False = 'false';
 	var Retarget = "retarget";
+	var Wait = 'wait';
 }
 
 @:enum @:forward abstract StorageConsts(String) from String to String {

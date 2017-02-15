@@ -109,7 +109,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 				(data:Array<Any>).map( haxe.Json.stringify.bind(_) ).join(' ');
 				
 			} else {
-				haxe.Json.stringify( (data:Array<Any>)[0] );
+				stringify( (data:Array<Any>)[0] );
 				
 			}
 			
@@ -169,6 +169,25 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	}
 	
 	//
+	
+	private override function get_wait():EWait {
+		if (wait == null) if (!hasAttribute(Wait)) {
+			wait = Until(0);
+			
+		} else {
+			var str = getAttribute(Wait);
+			if (str != '') {
+				wait = str.parseWaitAttribute();
+				
+			} else {
+				wait = For(select);
+				
+			}
+			
+		}
+		
+		return wait;
+	}
 	
 	private #if !debug inline #end function get_each():Bool {
 		return hasAttribute(Each);

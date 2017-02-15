@@ -51,7 +51,7 @@ class Main {
 				
 				Report.create(runner);
 				runner.run();
-			}, 1000 );
+			}, 2500 );
 			
 		});
 		

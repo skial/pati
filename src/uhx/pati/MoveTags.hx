@@ -75,6 +75,25 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 	
 	// override
 	
+	private override function get_wait():EWait {
+		if (wait == null) if (!hasAttribute(Wait)) {
+			wait = Until(0);
+			
+		} else {
+			var str = getAttribute(Wait);
+			if (str != '') {
+				wait = str.parseWaitAttribute();
+				
+			} else {
+				wait = For(to);
+				
+			}
+			
+		}
+		
+		return wait;
+	}
+	
 	public override function get_phase():EventPhase {
 		return Capturing;
 	}

@@ -5,6 +5,7 @@
 -lib regle
 -lib jwenn
 #-lib electron
+-lib thx.unit
 -lib tink_core
 #-lib tink_runloop
 

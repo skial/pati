@@ -288,6 +288,9 @@
 				hello
 			</div>
 			<span class="nested">hello world</span>
+			<div class="hello">
+				hello
+			</div>
 		</div>
 		<div class="outcome">
 			<div>
@@ -309,6 +312,7 @@
 			<css-data class="nested" select=".css.data .test.data > .hi" use:text to:span +:>
 				<css-data select=".css.data .test.data > .hello" use:text></css-data>
 			</css-data>
+			<css-data select=".css.data .test.data .hi" :class="*" use:text to:div></css-data>
 		</div>
 	</section>
 	<section class="move tags">
@@ -488,6 +492,24 @@
 						<img />
 					</pati-body>
 				</pati-article>
+			</div>
+		</div>
+	</section>
+	<section class="custom element waiting">
+		<h2>Paused Execution</h2>
+		<div class="expected">
+			<div class="a1">
+				<div class="a1 sub">
+					<p>Hello waiting world.</p>
+				</div>
+			</div>
+		</div>
+		<div class="outcome">
+			<div class="a1">
+				<convert-tag class="a1 sub" to:div wait="100ms"></convert-tag>
+				<move-tags to=".custom.element.waiting .outcome div.a1.sub" wait>
+					<p>Hello waiting world.</p>
+				</move-tags>
 			</div>
 		</div>
 	</section>

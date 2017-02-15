@@ -1,19 +1,62 @@
 package uhx.pati;
 
 import js.html.*;
+import thx.Decimal;
 import js.Browser.*;
+import uhx.pati.EWait;
+import thx.unit.time.*;
+import tink.core.Pair;
 import uhx.uid.Hashids;
 import uhx.pati.Consts;
+import tink.core.Signal;
+import tink.core.Callback;
 import uhx.pati.EventPhase;
 import uhx.pati.EventListener;
+
+using StringTools;
+using uhx.pati.Utilities;
 
 class Component extends uhx.pati.TemplateElement {
 	
 	public static var hash:Hashids = new Hashids();
 	
+	@:isVar public static var observer(get, null):MutationObserver;
+	@:isVar public static var mutated(get, null):Signal<Array<MutationRecord>>;
+	@:isVar public static var mutatedTrigger(get, null):SignalTrigger<Array<MutationRecord>>;
+	
+	//
+	
+	private static function get_observer():MutationObserver {
+		if (observer == null) observer = new MutationObserver( onMutation );
+		return observer;
+	}
+	
+	private static function get_mutated():Signal<Array<MutationRecord>> {
+		if (mutated == null) {
+			observer.observe( window.document, {childList:true, subtree:true} );
+			mutated = mutatedTrigger;
+			
+		}
+		
+		return mutated;
+	}
+	
+	private static function get_mutatedTrigger():SignalTrigger<Array<MutationRecord>> {
+		if (mutatedTrigger == null) mutatedTrigger = Signal.trigger();
+		return mutatedTrigger;
+	}
+	
+	//
+	
+	private static function onMutation(records:Array<MutationRecord>, observer:MutationObserver):Void {
+		mutatedTrigger.trigger( records );
+		
+	}
+	
 	//
 	
 	@:isVar public var uid(get, set):String;
+	@:isVar public var wait(get, null):EWait;
 	@:isVar public var isCustomChild(get, null):Bool;
 	@:isVar public var hasCustomChildren(get, null):Bool;
 	
@@ -31,7 +74,7 @@ class Component extends uhx.pati.TemplateElement {
 		
 		for (key in events.keys()) {
 			var event = events.get(key);
-			this.addEventListener(key, event.method, untyped event.options);
+			addEventListener(key, event.method, untyped event.options);
 			
 		}
 		
@@ -46,10 +89,10 @@ class Component extends uhx.pati.TemplateElement {
 		
 		if (isCustomChild) parentElement.dispatchEvent( new CustomEvent(ChildAdded, { detail:uid, bubbles:true } ) );
 		if (phase == Bubbling && !hasCustomChildren) {
-			attached();
+			intercept();
 			
 		} else if (phase == Capturing && !isCustomChild) {
-			attached();
+			intercept();
 			
 		}
 		
@@ -59,6 +102,33 @@ class Component extends uhx.pati.TemplateElement {
 		super.detachedCallback();
 		
 		detached();
+	}
+	
+	public function intercept():Void {
+		switch wait {
+			case Until(0):
+				attached();
+				
+			case Until(x) if (x > 0):
+				window.setTimeout( attached, x );
+				
+			case For(s):
+				var link:CallbackLink = null;
+				var callback:Callback<Array<MutationRecord>> = null;
+				
+				callback = function(_) {
+					if (document.querySelectorAll(s).length > 0) {
+						link.dissolve();
+						attached();
+						
+					}
+					
+				};
+				
+				link = mutated.handle( callback );
+				
+		}
+		
 	}
 	
 	//
@@ -124,6 +194,18 @@ class Component extends uhx.pati.TemplateElement {
 	
 	//
 	
+	private function get_wait():EWait {
+		if (wait == null) if (!hasAttribute(Wait)) {
+			wait = Until(0);
+			
+		} else {
+			wait = getAttribute(Wait).parseWaitAttribute();
+			
+		}
+		
+		return wait;
+	}
+		
 	private #if !debug inline #end function get_uid():String {
 		if (!hasAttribute(UID) && uid == null) {
 			uid = '';

@@ -5,6 +5,9 @@ import js.Browser.*;
 import uhx.pati.Consts;
 import uhx.pati.Phantom;
 
+using StringTools;
+using uhx.pati.Utilities;
+
 class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<Array<Phantom>, Phantom> {
 	
 	public static function main() {
@@ -26,7 +29,8 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	
 	public override function attached():Void {
 		if (!isCustomChild && select != null) {
-			onDataAvailable( find([document], select) );
+			var results = [for (n in document.querySelectorAll( select )) (n:Phantom)];
+			onDataAvailable( results );
 			
 		}
 		
@@ -35,6 +39,7 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	// IProcessor fields
 	
 	public function onDataAvailable(data:Array<Phantom>):Void {
+		this.replaceAttributes( Utilities.processAttribute.bind(_, new tink.core.Pair(cast data, cast this) ) );
 		var attach = childNodes.length > 0 && prepend ? insertBefore.bind(_, firstChild) : appendChild;
 		var newNodes = asText ? [(stringify(data):Phantom)] : data.map( Utilities.clone.bind(_, true) );
 		
@@ -45,12 +50,20 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	
 	public function find(data:Array<Phantom>, selector:String):Array<Phantom> {
 		var results = [];
-		for (d in data) for (n in d.querySelectorAll( selector )) results.push( (n:Phantom) );
+		var fragment = document.createDocumentFragment();
+		
+		for (d in data) {
+			fragment.appendChild((d:Phantom).clone());
+			
+		}
+		
+		for (n in fragment.querySelectorAll( selector )) results.push( (n:Phantom) );
+		
 		return results;
 	}
 	
 	public function stringify(data:Array<Phantom>):String {
-		return data.map( function(n) return n.textContent ).join(' ');
+		return data.map( function(n) return n.textContent ).join(' ').trim();
 	}
 	
 	public function handleNode(node:Phantom, data:Array<Phantom>, forEach:Bool = false):Void {
@@ -58,6 +71,25 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	}
 	
 	// (g/s)etters
+	
+	private override function get_wait():EWait {
+		if (wait == null) if (!hasAttribute(Wait)) {
+			wait = Until(0);
+			
+		} else {
+			var str = getAttribute(Wait);
+			if (str != '') {
+				wait = str.parseWaitAttribute();
+				
+			} else {
+				wait = For(select);
+				
+			}
+			
+		}
+		
+		return wait;
+	}
 	
 	private #if !debug inline #end function get_each():Bool {
 		return hasAttribute(Each);

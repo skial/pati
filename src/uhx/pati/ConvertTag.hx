@@ -3,6 +3,8 @@ package uhx.pati;
 import js.html.*;
 import js.Browser.*;
 import uhx.pati.Consts;
+import uhx.lexer.Html.Model;
+import uhx.lexer.Html.model;
 
 using uhx.pati.Utilities;
 
@@ -27,6 +29,7 @@ class ConvertTag<D, S> extends Staticise {
 	
 	//
 	
+	@:access(uhx.lexer.Html)
 	public override function attached():Void {
 		for (node in querySelectorAll('$Scope [$PendingRemoval="$True"]')) {
 			(node:Phantom).remove();
@@ -43,8 +46,13 @@ class ConvertTag<D, S> extends Staticise {
 				case _:
 						
 			}
+			
+			// Only add children to the replacement if it matches the html5 element model.
+			if (model(to.toLowerCase()) != Model.Empty) {
+				for (node in [for (n in childNodes) (n:Phantom)]) replacement.appendChild( node );
 				
-			for (node in [for (n in childNodes) (n:Phantom)]) replacement.appendChild( node );
+			}
+			
 			parentElement.insertBefore(replacement, this);
 				
 		} else {
@@ -67,7 +75,7 @@ class ConvertTag<D, S> extends Staticise {
 	}
 	
 	private function get_ignoredAttributes():Array<String> {
-		return [To, UID, PendingRemoval, Phase];
+		return [To, UID, PendingRemoval, Phase, Wait];
 	}
 	
 	private override function get_phase():EventPhase {

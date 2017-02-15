@@ -4,6 +4,8 @@ import js.html.*;
 import tink.core.*;
 import js.Browser.*;
 import haxe.ds.IntMap;
+import uhx.pati.EWait;
+import thx.unit.time.*;
 import uhx.pati.Consts;
 import uhx.pati.CustomElement;
 
@@ -11,6 +13,42 @@ using StringTools;
 using uhx.pati.Utilities;
 
 class Utilities {
+	
+	private static var isTimeUnit:EReg = ~/^ *([0-9]+(ms|s))? *$/im;
+	private static var getTimeUnit:EReg = ~/(ms|s)?/i;
+	private static var symbols:Array<Pair<String, Int->Millisecond>> = [
+		new Pair(Millisecond.symbol, Millisecond.fromInt), 
+		new Pair(Second.symbol, function(v) return (Second.fromInt(v):Millisecond))
+	];
+	
+	public static function parseWaitAttribute(value:String):EWait {
+		var result = Until(0);
+		
+		if (isTimeUnit.match( value )) {
+			var unit = Millisecond.symbol;
+			var action = symbols[0].b;
+			
+			if (getTimeUnit.match( isTimeUnit.matched(1) )) for (symbol in symbols) {
+				if (symbol.a == getTimeUnit.matched(1)) {
+					unit = symbol.a;
+					action = symbol.b;
+					break;
+					
+				}
+				
+			}
+			
+			result = Until( action(Std.parseInt( value.substring( 0, value.length - unit.length ) )).toDecimal().toInt() );
+			
+		} else if (value != '') {
+			console.log( value );
+			// Assume its a css selector
+			result = For(value);
+			
+		}
+		
+		return result;
+	}
 	
 	public static function diff(dom:Phantom, template:TemplateElement):Array<Phantom> {
 		var results = [];
@@ -142,9 +180,11 @@ class Utilities {
 			result = interpreted.value;
 			
 		} else {
+			console.log( pair.a, value );
 			// Attempt to match values with the entire attribute value.
 			var matches = pair.b.find( pair.a, value );
-			result = (matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : value);
+			//result = (matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : value);
+			result = pair.b.stringify( cast matches );
 			
 		}
 		
