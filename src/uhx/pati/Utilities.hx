@@ -180,10 +180,8 @@ class Utilities {
 			result = interpreted.value;
 			
 		} else {
-			console.log( pair.a, value );
 			// Attempt to match values with the entire attribute value.
 			var matches = pair.b.find( pair.a, value );
-			//result = (matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : value);
 			result = pair.b.stringify( cast matches );
 			
 		}
@@ -194,7 +192,7 @@ class Utilities {
 	public static #if !debug inline #end function bracketInterpolate<A, B>(value:String, pair:Pair<A, IProcessor<A, B>>) {
 		return trackAndInterpolate(value, -1, [Left => Right], function(str) {
 			var matches = pair.b.find( pair.a, str );
-			return matches.length > 0 ? matches.map( cast pair.b.stringify ).join(' ') : str;
+			return pair.b.stringify( cast matches );
 		});
 	}
 	

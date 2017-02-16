@@ -23,8 +23,8 @@ class ConvertTag<D, S> extends Staticise {
 		var _ = new ConvertTag();
 	}
 	
-	public function new() {
-		super();
+	public function new(?prefix:String, ?name:String) {
+		super(prefix, name);
 	}
 	
 	//

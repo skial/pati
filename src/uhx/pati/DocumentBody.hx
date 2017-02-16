@@ -8,8 +8,8 @@ class DocumentBody extends MoveTags {
 	
 	//
 	
-	public function new() {
-		super();
+	public function new(?prefix:String, ?name:String) {
+		super(prefix, name);
 	}
 	
 	// override

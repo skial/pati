@@ -1,7 +1,7 @@
 -cp src
 -cp tests
 
--lib utest
+#-lib utest
 -lib regle
 -lib jwenn
 #-lib electron
@@ -11,37 +11,11 @@
 
 -dce full
 
--D closure_advanced
+#-D closure_advanced
 -D closure_overwrite
+#-D closure_prettyprint
 
 --each
 
---next
-
--main uhx.pati.ConvertTag
--js bin/convert.tag.js
-
---next
-
--main uhx.pati.JsonData
--js bin/json.data.js
-
---next
-
--main uhx.pati.CssData
--js bin/css.data.js
-
---next
-
--main uhx.pati.MoveTags
--js bin/move.tags.js
-
---next
-
--main uhx.pati.DocumentBody
--js bin/document.body.js
-
---next
-
--main uhx.pati.DocumentHead
--js bin/document.head.js
+-main uhx.pati.ACE
+-js bin/ace.js

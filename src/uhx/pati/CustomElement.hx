@@ -11,13 +11,15 @@ class CustomElement extends Element {
 	@:isVar public var htmlPrefix(get, null):String;
 	@:isVar public var htmlFullname(get, set):String;
 	
-	public function new() {
+	public function new(?prefix:String, ?name:String) {
+		if (prefix != null) htmlPrefix = prefix;
+		if (name != null) htmlName = name;
+		
 		if (knownComponents.indexOf( htmlFullname ) == -1) {
 			knownComponents.push( htmlFullname );
 			
 		}
 		
-		console.log( htmlName, htmlPrefix, htmlFullname, knownComponents );
 		window.document.registerElement(htmlFullname, { prototype: this });
 		
 	}

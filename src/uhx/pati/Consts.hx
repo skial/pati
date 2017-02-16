@@ -12,6 +12,7 @@ package uhx.pati;
 			case Process: ':';
 			case _: String.fromCharCode(this);
 		}
+		
 	}
 	
 }
@@ -25,24 +26,45 @@ package uhx.pati;
 }
 
 @:enum @:forward abstract AttributeConsts(String) from String to String {
-	var UID = 'uid';
-	var Name = 'data-name';
-	var Prefix = 'data-prefix';
-	var To = 'to:';
 	var ShortTo = To;
 	var LongTo = 'to';
-	var Select = 'select';
-	var PendingRemoval = 'pending-remove';
-	var ScopedData = 'scoped-data';
-	var Phase = 'phase';
-	var Each = 'each';
 	var Append = ':+';
 	var Prepend = '+:';
-	var UseText = 'use:text';
+	var Select = 'select';
+	var PendingRemoval = 'pending-remove';
+}
+
+@:enum @:forward abstract AttributeValues(String) from String to String {
 	var True = 'true';
 	var False = 'false';
-	var Retarget = "retarget";
+}
+
+@:enum @:foward abstract CustomElementAttributes(String) from String to String {
+	var Name = 'data-name';
+	var Prefix = 'data-prefix';
+}
+
+@:enum @:forward abstract ComponentAttributes(String) from String to String {
+	var UID = 'uid';
 	var Wait = 'wait';
+	var Phase = 'phase';
+}
+
+@:enum @:forward abstract ConvertTagAttributes(String) from String to String {
+	var To = 'to:';
+}
+
+@:enum @:forward abstract DomDataAttributes(String) from String to String {
+	var UseText = 'use:text';
+	var TargetCopy = 'target:copy'; // Default action.
+	var TargetMove = 'target:move';
+	var TargetRemove = 'target:remove';
+}
+
+@:enum @:forward abstract JsonDataAttributes(String) from String to String {
+	var Each = 'each';
+	var Retarget = "retarget";
+	var ScopedData = 'scoped-data';
 }
 
 @:enum @:forward abstract StorageConsts(String) from String to String {

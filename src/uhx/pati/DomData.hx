@@ -8,10 +8,16 @@ import uhx.pati.Phantom;
 using StringTools;
 using uhx.pati.Utilities;
 
-class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<Array<Phantom>, Phantom> {
+@:enum abstract TargetAction(Int) from Int to Int {
+	public var Copy = 0;
+	public var Move = 1;
+	public var Remove = 2;
+}
+
+class DomData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<Array<Phantom>, Phantom> {
 	
 	public static function main() {
-		var _ = new CssData();
+		var _ = new DomData();
 	}
 	
 	//
@@ -20,9 +26,10 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	public var asText(get, null):Bool;
 	public var prepend(get, null):Bool;
 	public var select(get, null):Null<String>;
+	public var targetAction(get, null):TargetAction;
 	
-	public function new() {
-		super();
+	public function new(?prefix:String, ?name:String) {
+		super(prefix, name);
 	}
 	
 	// overloads
@@ -41,7 +48,21 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	public function onDataAvailable(data:Array<Phantom>):Void {
 		this.replaceAttributes( Utilities.processAttribute.bind(_, new tink.core.Pair(cast data, cast this) ) );
 		var attach = childNodes.length > 0 && prepend ? insertBefore.bind(_, firstChild) : appendChild;
-		var newNodes = asText ? [(stringify(data):Phantom)] : data.map( Utilities.clone.bind(_, true) );
+		var newNodes = switch targetAction {
+			case Copy:
+				data.map( Utilities.clone.bind(_, true) );
+				
+			case Move:
+				data;
+				
+			case Remove:
+				var r = data.map( Utilities.clone.bind(_, true) );
+				data.map( function(n) n.remove() );
+				r;
+				
+		}
+		
+		if (asText) newNodes = [(stringify(newNodes):Phantom)];
 		
 		newNodes.map( attach );
 		
@@ -91,6 +112,20 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 		return wait;
 	}
 	
+	private #if !debug inline #end function get_targetAction():TargetAction {
+		var result = Copy;
+		
+		if (!hasAttribute(TargetCopy)) if (hasAttribute(TargetMove)) {
+			result = asText ? Remove : Move;
+			
+		} else if (hasAttribute(TargetRemove)) {
+			result = Remove;
+			
+		}
+		
+		return result;
+	}
+	
 	private #if !debug inline #end function get_each():Bool {
 		return hasAttribute(Each);
 	}
@@ -113,7 +148,7 @@ class CssData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	}
 	
 	private override function get_ignoredAttributes():Array<String> {
-		return super.get_ignoredAttributes().concat( [Select, Each, UseText, Prepend, Append] );
+		return super.get_ignoredAttributes().concat( [Select, Each, UseText, Prepend, Append, TargetMove, TargetRemove] );
 	}
 	
 }

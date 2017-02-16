@@ -21,7 +21,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 		globalData.trigger( e.detail );
 	}
 	
-	public static function main() {
+	@:keep public static function init():Void {
 		if (untyped window.json_data != null) {
 			globalData.trigger( untyped window.json_data );
 			
@@ -29,6 +29,10 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 			window.document.addEventListener(JsonDataRecieved, onGlobalJsonDataAvailable, untyped {once:true, capture:false});
 			
 		}
+	}
+	
+	public static function main() {
+		init();
 		
 		var _ = new JsonData();
 	}
@@ -40,8 +44,8 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	@:isVar public var select(get, null):Null<String>;
 	@:isVar public var retarget(get, null):Null<String>;
 	
-	public function new() {
-		super();
+	public function new(?prefix:String, ?name:String) {
+		super(prefix, name);
 	}
 	
 	// overloads

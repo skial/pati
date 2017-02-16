@@ -18,8 +18,8 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 	public var prepend(get, null):Bool;
 	public var to(get, null):Null<String>;
 	
-	public function new() {
-		super();
+	public function new(?prefix:String, ?name:String) {
+		super(prefix, name);
 	}
 	
 	public override function attached():Void {

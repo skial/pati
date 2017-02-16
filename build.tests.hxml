@@ -41,8 +41,8 @@
 
 --next
 
--main uhx.pati.CssData
--js bin/css.data.js
+-main uhx.pati.DomData
+-js bin/dom.data.js
 
 --next
 
@@ -58,3 +58,8 @@
 
 -main uhx.pati.DocumentHead
 -js bin/document.head.js
+
+--next
+
+-main uhx.pati.ACE
+-js bin/ace.js

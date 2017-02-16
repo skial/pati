@@ -63,8 +63,8 @@ class Component extends uhx.pati.TemplateElement {
 	public var phase(get, null):EventPhase;
 	public var events(get, null):Map<String, EventListener>;
 	
-	public function new() {
-		super();
+	public function new(?prefix:String, ?name:String) {
+		super(prefix, name);
 	}
 	
 	// v0 lifecycle callbacks
