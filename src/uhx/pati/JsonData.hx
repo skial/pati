@@ -21,14 +21,8 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 		globalData.trigger( e.detail );
 	}
 	
-	@:keep public static function init():Void {
-		if (untyped window.json_data != null) {
-			globalData.trigger( untyped window.json_data );
-			
-		} else {
-			window.document.addEventListener(JsonDataRecieved, onGlobalJsonDataAvailable, untyped {once:true, capture:false});
-			
-		}
+	@:keep public static #if !debug inline #end function init():Void {
+		window.document.addEventListener(JsonDataRecieved, onGlobalJsonDataAvailable, untyped {once:true, capture:false});
 	}
 	
 	public static function main() {
@@ -55,19 +49,22 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 			if (!isScoped) {
 				var link = globalData.asFuture().handle( onDataAvailable );
 				
-			} else if (select != null) {
+			} else if (select != null && retarget == null) {
+				onDataAvailable( haxe.Json.parse( getAttribute(ScopedData) ) );
 				
-				if (retarget == null) {
-					onDataAvailable( haxe.Json.parse( getAttribute(ScopedData) ) );
+			} else if (retarget != null) {
+				globalData.asFuture().handle( function (d) {
+					var selector = retarget.bracketInterpolate( new Pair(d, (this:IProcessor<Any, Any>)) );
+					var data = find(d, selector.value);
 					
-				} else {
-					globalData.asFuture().handle( function (d) {
-						var selector = retarget.bracketInterpolate( new Pair(d, (this:IProcessor<Any, Any>)) );
-						onDataAvailable( find(d, selector.value) );
-						
-					} );
+					if (data.length > 0 && retarget == select) {
+						select = null;
+						setAttribute(Select, '*');
+					};
 					
-				}
+					onDataAvailable( data );
+					
+				} );
 				
 			}
 			
@@ -110,7 +107,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	public function stringify(data:Any):String {
 		var result = if (Std.is(data, Array)) {
 			if ((data:Array<Any>).length > 1) {
-				(data:Array<Any>).map( haxe.Json.stringify.bind(_) ).join(' ');
+				(data:Array<Any>).map( haxe.Json.stringify.bind(_) ).map( StringTools.replace.bind(_, '"', '') ).join(' ');
 				
 			} else {
 				stringify( (data:Array<Any>)[0] );
@@ -131,15 +128,29 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	public function find(data:Any, selector:String):Array<Any> {
 		var results = [];
 		if (selector == null || selector.length == 0) return results;
-		results = cast JsonQuery.find( data, selector );
+		// Bypass `JsonQuery` which only works on objects and arrays.
+		if (selector == '*') {
+			if (Std.is(data, Array)) {
+				results = cast data;
+				
+			} else {
+				results = [data];
+				
+			}
+			
+		} else {
+			results = cast JsonQuery.find( data, selector );
+			
+		}
+		
 		return cast results;
 	}
 	
 	public function handleNode(node:Phantom, data:Any, forEach:Bool = false):Void {
 		var pair:Pair<Any, IProcessor<Any, Any>> = new Pair(data, (this:IProcessor<Any, Any>));
+		var modified = node.clone() | pair;
 		
 		if (CustomElement.knownComponents.indexOf(node.tagName.toLowerCase()) == -1) {
-			var modified = node.clone() | pair;
 			
 			if (forEach) {
 				appendChild(modified);
@@ -158,9 +169,10 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 			
 		} else {
 			if (node.tagName.toLowerCase() == htmlFullname) {
-				for (attribute in [for (a in node.attributes) a]) if (['$Process$Select'].indexOf(attribute.name) > -1) {
-					node.setAttribute(Select, Utilities.processAttribute( attribute.value, pair ) );
-					node.removeAttribute('$Process$Select');
+				
+				for (attribute in [for (a in node.attributes) a]) if (['$Process$Select', '$Process$Retarget'].indexOf(attribute.name) > -1) {
+					node.setAttribute(attribute.name.substring(1), Utilities.processAttribute( attribute.value, pair ) );
+					node.removeAttribute(attribute.name);
 					
 				}
 				
@@ -213,7 +225,13 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	private #if !debug inline #end function get_retarget():Null<String> {
 		if (hasAttribute(Retarget)) {
 			retarget = getAttribute(Retarget);
-			if (retarget == null || retarget == '') retarget = Root;
+			if (retarget == null || retarget == '') if (select != null) {
+				retarget = select;
+				
+			} else {
+				retarget = Root;
+				
+			}
 			
 		}
 		

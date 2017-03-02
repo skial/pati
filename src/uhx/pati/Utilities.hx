@@ -41,7 +41,6 @@ class Utilities {
 			result = Until( action(Std.parseInt( value.substring( 0, value.length - unit.length ) )).toDecimal().toInt() );
 			
 		} else if (value != '') {
-			console.log( value );
 			// Assume its a css selector
 			result = For(value);
 			
@@ -70,7 +69,7 @@ class Utilities {
 		var results = [];
 		var domIndex = 0;
 		var customElements = CustomElement.knownComponents;
-		//console.log( dom, template );
+		
 		while (domIndex < dom.length) {
 			var match = false;
 			var templateIndex = 0;
@@ -133,12 +132,12 @@ class Utilities {
 	 *	fully.
 	*/
 	public static function clone(node:Phantom, deep:Bool = true):Phantom {
-		var tagName = '';
+		var tagName = node.nodeType == Node.ELEMENT_NODE ? node.tagName.toLowerCase() : '';
 		
-		if (node.nodeType == Node.ELEMENT_NODE && CustomElement.knownComponents.indexOf( tagName = node.tagName.toLowerCase() ) > -1) {
+	if (node.nodeType == Node.ELEMENT_NODE /*&& CustomElement.knownComponents.indexOf( tagName = node.tagName.toLowerCase() ) > -1*/) {
 			var clone:Phantom = window.document.createElement( tagName );
 			// Use `(g/s)etAttributeNode` instead of `(g/s)etAttribute` to avoid invalid value errors.
-			for (a in node.attributes) if (a.name != UID || a.name != PendingRemoval) clone.setAttributeNode(untyped node.getAttributeNode(a.name).cloneNode(true));
+			for (a in node.attributes) if (a.name != UID && a.name != PendingRemoval) clone.setAttributeNode(untyped node.getAttributeNode(a.name).cloneNode(true));
 			for (c in node.childNodes) clone.appendChild( c.clone( deep ) );
 			node = clone;
 			
