@@ -10,7 +10,7 @@
 		
 		.pass,
 		.outcome > :not(dom-dump),
-		.outcome > :not(css-data),
+		.outcome > :not(dom-data),
 		.outcome > :not(json-data),
 		.outcome > :not(move-tags),
 		.outcome > :not(spec-bubbling),
@@ -19,7 +19,7 @@
 		}
 		.error,
 		.outcome > dom-dump,
-		.outcome > css-data,
+		.outcome > dom-data,
 		.outcome > json-data,
 		.outcome > move-tags,
 		.outcome > spec-bubbling,
@@ -64,19 +64,52 @@
 		"b1": "foo b1",
 		"b2": "foo b2",
 		"c1": "foo c1",
-		"c2": "foo c2"
+		"c2": "foo c2",
+		"objects": [
+			{
+				"fullname": {
+					"first": "bob",
+					"last": "smith"
+				},
+				"values":[
+					'a', 'b', 'c'
+				]
+			},
+			{
+				"fullname": {
+					"first": "foo",
+					"last": "bar"
+				},
+				"values":[
+					'd', 'e', 'f'
+				]
+			},
+			{
+				"fullname": {
+					"first": "baz",
+					"last": "smith"
+				},
+				"values":[
+					'g', 'h', 'i'
+				]
+			}
+		],
+		"lastnames": ['bar', 'smith']
 	}
 	</script>
-	<script src="spec.js"></script>
+	<!--<script src="ace.js"></script>-->
+	<link href="ace.html" rel="import" />
 	<link href="bubbling.html" rel="import" />
 	<link href="capturing.html" rel="import" />
-	<link href="convert.tag.html" rel="import" />
-	<link href="json.data.html" rel="import" />
-	<link href="css.data.html" rel="import" />
-	<link href="move.tags.html" rel="import" />
 	<link href="dom.dump.html" rel="import" />
 	<link href="pati.article.html" rel="import" />
 	<link href="pati.body.html" rel="import" />
+	<!--<link href="convert.tag.html" rel="import" />
+	<link href="json.data.html" rel="import" />
+	<link href="dom.data.html" rel="import" />
+	<link href="move.tags.html" rel="import" />
+	-->
+	<script src="spec.js"></script>
 </head>
 <body>
 	<h1>Pati Component Tests</h1>
@@ -195,27 +228,42 @@
 			<div class="a1">a1<div class="a2">a2<div class="b1">b1</div></div></div>
 			<h4>a1</h4>
 			<ul>
-				<li>I am foo a1</li>
+				<li class="collection__a1">I am foo a1</li>
 			</ul>
 			<h4>a2</h4>
 			<ul>
-				<li>I am foo a2</li>
+				<li class="collection__a2">I am foo a2</li>
 			</ul>
 			<h4>b1</h4>
 			<ul>
-				<li>I am foo b1</li>
+				<li class="collection__b1">I am foo b1</li>
 			</ul>
 			<h4>b2</h4>
 			<ul>
-				<li>I am foo b2</li>
+				<li class="collection__b2">I am foo b2</li>
 			</ul>
 			<h4>c1</h4>
 			<ul>
-				<li>I am foo c1</li>
+				<li class="collection__c1">I am foo c1</li>
 			</ul>
 			<h4>c2</h4>
 			<ul>
-				<li>I am foo c2</li>
+				<li class="collection__c2">I am foo c2</li>
+			</ul>
+			<h4>bar</h4>
+			<ul>
+				<li>
+					<p>Hello from foo bar</p>
+				</li>
+			</ul>
+			<h4>smith</h4>
+			<ul>
+				<li>
+					<p>Hello from bob smith</p>
+				</li>
+				<li>
+					<p>Hello from baz smith</p>
+				</li>
 			</ul>
 		</div>
 		<div class="outcome">
@@ -256,10 +304,20 @@
 					</json-data>
 				</ul>
 			</json-data>
+			<json-data select=".lastnames" each>
+				<h4><span :to="*"></span></h4>
+				<ul>
+					<json-data :select=".objects :has([last='{*}'])" retarget each>
+						<li>
+							<p><span :to="Hello from {.fullname .first} {.fullname .last}"></span></p>
+						</li>
+					</json-data>
+				</ul>
+			</json-data>
 		</div>
 	</section>
-	<section class="css data">
-		<h2>Css Data</h2>
+	<section class="dom data">
+		<h2>Dom Data</h2>
 		<div class="test data">
 			<div class="hi">
 				hello
@@ -291,28 +349,48 @@
 			<div class="hello">
 				hello
 			</div>
+			<div data-foo=".hello-world">
+				hello
+			</div>
+			<div class="a1">
+				<div>Hello World | Removable DOM.</div>
+			</div>
+			<div class="a2">
+				<div>Hello World | Removable DOM.</div>
+				<div>Hello World | Removable</div>
+			</div>
 		</div>
 		<div class="outcome">
 			<div>
-				<css-data select=".css.data .test.data > .hello">
+				<dom-data select=".dom.data .test.data > .hello">
 					hello
-				</css-data>
+				</dom-data>
 			</div>
 			<div>
-				<css-data select=".css.data .test.data > .hello" use:text>
+				<dom-data select=".dom.data .test.data > .hello" use:text>
 					hello
-				</css-data>
+				</dom-data>
 			</div>
-			<css-data select=".css.data .test.data > .hello" use:text to:div>
+			<dom-data select=".dom.data .test.data > .hello" use:text to:div>
 				hello
-			</css-data>
-			<css-data select=".css.data .test.data > .hello" use:text to:div +:>
+			</dom-data>
+			<dom-data select=".dom.data .test.data > .hello" use:text to:div +:>
 				hello
-			</css-data>
-			<css-data class="nested" select=".css.data .test.data > .hi" use:text to:span +:>
-				<css-data select=".css.data .test.data > .hello" use:text></css-data>
-			</css-data>
-			<css-data select=".css.data .test.data .hi" :class="*" use:text to:div></css-data>
+			</dom-data>
+			<dom-data class="nested" select=".dom.data .test.data > .hi" use:text to:span +:>
+				<dom-data select=".dom.data .test.data > .hello" use:text></dom-data>
+			</dom-data>
+			<dom-data select=".dom.data .test.data .hi" :class="*" use:text to:div></dom-data>
+			<dom-data select=".dom.data .test.data .hi" :data-foo=".{*}-world" use:text to:div></dom-data>
+			<div class="a1">
+				<span>Hello World | Removable</span>
+				<dom-data select=".dom.data .outcome .a1 span" use:text target:remove to:div +:> DOM.</dom-data>
+			</div>
+			<div class="a2">
+				<span>Hello World | Removable</span>
+				<dom-data select=".dom.data .outcome .a2 span" use:text to:div +:> DOM.</dom-data>
+				<dom-data select=".dom.data .outcome .a2 span" use:text target:move to:div></dom-data>
+			</div>
 		</div>
 	</section>
 	<section class="move tags">

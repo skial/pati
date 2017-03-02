@@ -5,6 +5,7 @@ import js.Browser.*;
 import utest.Assert;
 import utest.Runner;
 import tink.core.Pair;
+import uhx.pati.Consts;
 import utest.ui.Report;
 import uhx.pati.Phantom;
 import utest.TestFixture;
@@ -36,6 +37,9 @@ class Main {
 	
 	public static function main() {
 		window.document.addEventListener(DOMContentLoaded, function(e) {
+			// Trigger JsonData elements.
+			window.document.dispatchEvent( new CustomEvent(JsonDataRecieved, {detail:untyped window.json_data, bubbles:true}) );
+			
 			window.setTimeout( function() {
 				var runner = new Runner();
 				
