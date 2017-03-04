@@ -7,15 +7,18 @@
 #-lib electron
 -lib thx.unit
 -lib tink_core
--lib closure
+#-lib closure
 
 -dce full
+-D analyzer-optimize
 
 #-D closure_advanced
--D closure_overwrite
+#-D closure_overwrite
 #-D closure_prettyprint
 
 --each
 
 -main uhx.pati.ACE
 -js bin/ace.js
+
+-cmd uglifyjs bin/ace.js --screw-ie8 --reserve-domprops -c collapse_vars,reduce_vars -o bin/ace.js
