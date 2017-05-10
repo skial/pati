@@ -1,0 +1,7 @@
+{
+    "haxe.displayConfigurations": [
+        ["build.tests.hxml"],
+        ["build.core.hxml"]
+    ],
+    "editor.minimap.enabled": true
+}

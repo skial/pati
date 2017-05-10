@@ -3,8 +3,8 @@ package uhx.pati;
 import js.html.*;
 import js.Browser.*;
 import uhx.pati.Consts;
-import uhx.lexer.Html.Model;
-import uhx.lexer.Html.model;
+import uhx.mo.html.Lexer.Model;
+import uhx.mo.html.Lexer.model;
 
 using uhx.pati.Utilities;
 
@@ -48,7 +48,7 @@ class ConvertTag<D, S> extends Staticise {
 			}
 			
 			// Only add children to the replacement if it matches the html5 element model.
-			if (model(to.toLowerCase()) != Model.Empty) {
+			if (@:privateAccess model(to.toLowerCase()) != Model.Empty) {
 				for (node in [for (n in childNodes) (n:Phantom)]) replacement.appendChild( node );
 				
 			}
