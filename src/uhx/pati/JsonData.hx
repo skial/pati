@@ -47,7 +47,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	// overloads
 	
 	public override function attached():Void {
-		console.log( isCustomChild, isScoped, select, retarget, src );
+		//console.log( isCustomChild, isScoped, select, retarget, src );
 		if (!isCustomChild) {
 			if (!isScoped && !hasAttribute(Src)) {
 				var link = globalData.asFuture().handle( onDataAvailable );
@@ -70,7 +70,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 				} );
 				
 			} else if (src != null) {
-				console.log( src );
+				//console.log( src );
 				#if hxnodejs
 
 				#else
@@ -82,12 +82,12 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 									onDataAvailable( json );
 
 								case Failure(e):
-									console.log( e );
+									//console.log( e );
 
 							} );
 
 						case Failure(e):
-							console.log( e );
+							//console.log( e );
 
 					} );
 				#end
