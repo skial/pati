@@ -62,6 +62,7 @@ package uhx.pati;
 }
 
 @:enum @:forward abstract JsonDataAttributes(String) from String to String {
+	var Src = 'src';
 	var Each = 'each';
 	var Retarget = "retarget";
 	var ScopedData = 'scoped-data';

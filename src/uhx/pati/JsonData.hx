@@ -10,6 +10,7 @@ import tink.core.Callback;
 import haxe.DynamicAccess;
 import uhx.select.JsonQuery;
 
+using tink.CoreApi;
 using uhx.pati.Utilities;
 
 @:access(uhx.select.JsonQuery)
@@ -35,6 +36,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	
 	public var each(get, null):Bool;
 	public var isScoped(get, null):Bool;
+	@:isVar public var src(get, null):Null<String>;
 	@:isVar public var select(get, null):Null<String>;
 	@:isVar public var retarget(get, null):Null<String>;
 	
@@ -45,11 +47,12 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	// overloads
 	
 	public override function attached():Void {
+		console.log( isCustomChild, isScoped, select, retarget, src );
 		if (!isCustomChild) {
-			if (!isScoped) {
+			if (!isScoped && !hasAttribute(Src)) {
 				var link = globalData.asFuture().handle( onDataAvailable );
 				
-			} else if (select != null && retarget == null) {
+			} else if (src == null && select != null && retarget == null) {
 				onDataAvailable( haxe.Json.parse( getAttribute(ScopedData) ) );
 				
 			} else if (retarget != null) {
@@ -66,6 +69,29 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 					
 				} );
 				
+			} else if (src != null) {
+				console.log( src );
+				#if hxnodejs
+
+				#else
+					var f:Surprise<Response, Error> = window.fetch( src );
+					f.handle( function(o) switch o {
+						case Success(r):
+							Future.ofJsPromise( r.json() ).handle( function(o) switch o {
+								case Success(json):
+									onDataAvailable( json );
+
+								case Failure(e):
+									console.log( e );
+
+							} );
+
+						case Failure(e):
+							console.log( e );
+
+					} );
+				#end
+
 			}
 			
 		}
@@ -220,6 +246,15 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 		}
 		
 		return select;
+	}
+
+	private #if !debug inline #end function get_src():Null<String> {
+		if (hasAttribute(Src)) {
+			src = getAttribute(Src);
+
+		}
+
+		return src;
 	}
 	
 	private #if !debug inline #end function get_retarget():Null<String> {

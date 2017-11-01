@@ -265,6 +265,10 @@
 					<p>Hello from baz smith</p>
 				</li>
 			</ul>
+			<ul class="titles">
+				<li class="title Mr">Mr</li>
+				<li class="title Dr">Dr</li>
+			</ul>
 		</div>
 		<div class="outcome">
 			<div>
@@ -314,6 +318,11 @@
 					</json-data>
 				</ul>
 			</json-data>
+			<ul class="titles">
+				<json-data src="data.json" select=".titles" each>
+					<li :class="title {*}"><span :to="*"></span></li>
+				</json-data>
+			</ul>
 		</div>
 	</section>
 	<section class="dom data">
