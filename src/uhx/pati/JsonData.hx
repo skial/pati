@@ -47,11 +47,8 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	// overloads
 	
 	public override function attached():Void {
-		console.log( isCustomChild, isScoped, getAttribute(ScopedData), select, retarget, src );
-		console.log( this.outerHTML );
 		if (!isCustomChild) {
-			if (hasAttribute(Src) || hasAttribute('$Process$Src')) {
-				console.log( src );
+			if (hasAttribute(Src) || hasAttribute('$Process$Src')) {		
 				#if hxnodejs
 
 				#else
@@ -59,8 +56,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 					f.handle( function(o) switch o {
 						case Success(r):
 							Future.ofJsPromise( r.json() ).handle( function(o) switch o {
-								case Success(json):
-									console.log(json);
+								case Success(json):							
 									onDataAvailable( json );
 
 								case Failure(e):
@@ -108,7 +104,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 		var pair:Pair<Any, IProcessor<Any, Any>> = new Pair(cast matches, self);
 		
 		this.replaceAttributes( Utilities.processAttribute.bind(_, new Pair(cast matches, self) ) );
-		console.log( each, matches );
+		
 		var action:Array<Phantom>->Void = each ? function(children) {
 			for (match in matches) for (child in children) handleNode(child, match, true);
 			
@@ -197,17 +193,14 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 			
 		} else {
 			if (node.tagName.toLowerCase() == htmlFullname) {
-				console.log( node.nodeType, node.outerHTML );
+				var skipScope = false;
 				var modified = node.clone();
 
-				var skipScope = false;
 				if (skipScope = node.hasAttribute('$Process$Src')) {
 					if (forEach) {
-						console.log('appendChild');
 						appendChild(modified);
 						
 					} else {
-						console.log('modified | node');
 						modified | node;
 						
 					}
@@ -216,14 +209,14 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 					node = modified;
 					
 				}
-				console.log( node.nodeType, node.outerHTML );
+				
 				for (attribute in [for (a in node.attributes) a]) if (['$Process$Src', '$Process$Select', '$Process$Retarget'].indexOf(attribute.name) > -1) {
-					console.log( attribute.value, data );
+					
 					node.setAttribute(attribute.name.substring(1), Utilities.processAttribute( attribute.value, pair ) );
 					node.removeAttribute(attribute.name);
 					
 				}
-				console.log( node.outerHTML );
+				
 				if (!skipScope) node.setAttribute(ScopedData, haxe.Json.stringify(data));
 				
 			}
