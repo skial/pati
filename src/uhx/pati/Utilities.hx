@@ -64,7 +64,7 @@ class Utilities {
 		return results;
 	}
 	
-	// Checks for differences between the custom element is to the original template.
+	// Checks for differences between the custom element and the original template.
 	public static function diffChildren(dom:Array<Phantom>, template:Array<Phantom>):Array<Phantom> {
 		var results = [];
 		var domIndex = 0;
@@ -134,7 +134,7 @@ class Utilities {
 	public static function clone(node:Phantom, deep:Bool = true):Phantom {
 		var tagName = node.nodeType == Node.ELEMENT_NODE ? node.tagName.toLowerCase() : '';
 		
-	if (node.nodeType == Node.ELEMENT_NODE /*&& CustomElement.knownComponents.indexOf( tagName = node.tagName.toLowerCase() ) > -1*/) {
+		if (node.nodeType == Node.ELEMENT_NODE /*&& CustomElement.knownComponents.indexOf( tagName = node.tagName.toLowerCase() ) > -1*/) {
 			var clone:Phantom = window.document.createElement( tagName );
 			// Use `(g/s)etAttributeNode` instead of `(g/s)etAttribute` to avoid invalid value errors.
 			for (a in node.attributes) if (a.name != UID && a.name != PendingRemoval) clone.setAttributeNode(untyped node.getAttributeNode(a.name).cloneNode(true));

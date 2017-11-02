@@ -47,12 +47,37 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	// overloads
 	
 	public override function attached():Void {
-		//console.log( isCustomChild, isScoped, select, retarget, src );
+		console.log( isCustomChild, isScoped, getAttribute(ScopedData), select, retarget, src );
+		console.log( this.outerHTML );
 		if (!isCustomChild) {
-			if (!isScoped && !hasAttribute(Src)) {
+			if (hasAttribute(Src) || hasAttribute('$Process$Src')) {
+				console.log( src );
+				#if hxnodejs
+
+				#else
+					var f:Surprise<Response, Error> = window.fetch( src );
+					f.handle( function(o) switch o {
+						case Success(r):
+							Future.ofJsPromise( r.json() ).handle( function(o) switch o {
+								case Success(json):
+									console.log(json);
+									onDataAvailable( json );
+
+								case Failure(e):
+									console.log( e );
+
+							} );
+
+						case Failure(e):
+							console.log( e );
+
+					} );
+				#end
+
+			} else if (!isScoped) {
 				var link = globalData.asFuture().handle( onDataAvailable );
 				
-			} else if (src == null && select != null && retarget == null) {
+			} else if (select != null && retarget == null) {
 				onDataAvailable( haxe.Json.parse( getAttribute(ScopedData) ) );
 				
 			} else if (retarget != null) {
@@ -69,29 +94,6 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 					
 				} );
 				
-			} else if (src != null) {
-				//console.log( src );
-				#if hxnodejs
-
-				#else
-					var f:Surprise<Response, Error> = window.fetch( src );
-					f.handle( function(o) switch o {
-						case Success(r):
-							Future.ofJsPromise( r.json() ).handle( function(o) switch o {
-								case Success(json):
-									onDataAvailable( json );
-
-								case Failure(e):
-									//console.log( e );
-
-							} );
-
-						case Failure(e):
-							//console.log( e );
-
-					} );
-				#end
-
 			}
 			
 		}
@@ -106,7 +108,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 		var pair:Pair<Any, IProcessor<Any, Any>> = new Pair(cast matches, self);
 		
 		this.replaceAttributes( Utilities.processAttribute.bind(_, new Pair(cast matches, self) ) );
-		
+		console.log( each, matches );
 		var action:Array<Phantom>->Void = each ? function(children) {
 			for (match in matches) for (child in children) handleNode(child, match, true);
 			
@@ -174,9 +176,9 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	
 	public function handleNode(node:Phantom, data:Any, forEach:Bool = false):Void {
 		var pair:Pair<Any, IProcessor<Any, Any>> = new Pair(data, (this:IProcessor<Any, Any>));
-		var modified = node.clone() | pair;
 		
 		if (CustomElement.knownComponents.indexOf(node.tagName.toLowerCase()) == -1) {
+			var modified = node.clone() | pair;
 			
 			if (forEach) {
 				appendChild(modified);
@@ -195,14 +197,34 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 			
 		} else {
 			if (node.tagName.toLowerCase() == htmlFullname) {
-				
-				for (attribute in [for (a in node.attributes) a]) if (['$Process$Select', '$Process$Retarget'].indexOf(attribute.name) > -1) {
+				console.log( node.nodeType, node.outerHTML );
+				var modified = node.clone();
+
+				var skipScope = false;
+				if (skipScope = node.hasAttribute('$Process$Src')) {
+					if (forEach) {
+						console.log('appendChild');
+						appendChild(modified);
+						
+					} else {
+						console.log('modified | node');
+						modified | node;
+						
+					}
+
+					node.setAttribute(PendingRemoval, True);
+					node = modified;
+					
+				}
+				console.log( node.nodeType, node.outerHTML );
+				for (attribute in [for (a in node.attributes) a]) if (['$Process$Src', '$Process$Select', '$Process$Retarget'].indexOf(attribute.name) > -1) {
+					console.log( attribute.value, data );
 					node.setAttribute(attribute.name.substring(1), Utilities.processAttribute( attribute.value, pair ) );
 					node.removeAttribute(attribute.name);
 					
 				}
-				
-				node.setAttribute(ScopedData, haxe.Json.stringify(data));
+				console.log( node.outerHTML );
+				if (!skipScope) node.setAttribute(ScopedData, haxe.Json.stringify(data));
 				
 			}
 			
@@ -274,7 +296,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	}
 	
 	private override function get_ignoredAttributes():Array<String> {
-		return super.get_ignoredAttributes().concat( [Select, ScopedData, Each, Retarget] );
+		return super.get_ignoredAttributes().concat( [Select, ScopedData, Each, Retarget, Src] );
 	}
 	
 }

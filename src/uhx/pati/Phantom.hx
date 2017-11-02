@@ -43,6 +43,7 @@ using uhx.pati.Utilities;
 	
 	@:op(A|B) @:commutative
 	public static #if !debug inline #end function convertNode<D, S>(node:Phantom, pair:Pair<D, IProcessor<D, S>>):Phantom {
+		console.log('convertNode');
 		var to = node.to;
 		var result = node;
 		
@@ -60,6 +61,7 @@ using uhx.pati.Utilities;
 	
 	@:op(A|B) @:commutative
 	public static #if !debug inline #end function insertBeforeElement(newNode:Phantom, oldNode:Element):Phantom {
+		console.log('insertBeforeElement');
 		var result = oldNode;
 		
 		if (oldNode != newNode) {
@@ -73,6 +75,7 @@ using uhx.pati.Utilities;
 	
 	@:op(A|B) @:commutative
 	public static #if !debug inline #end function insertBeforeNode(newNode:Phantom, oldNode:Node):Phantom {
+		console.log('insertBeforeNode');
 		return switch oldNode.nodeType {
 			case Node.ELEMENT_NODE, Node.DOCUMENT_NODE, Node.DOCUMENT_FRAGMENT_NODE:
 				insertBeforeElement(newNode, cast oldNode);

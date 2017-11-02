@@ -269,6 +269,17 @@
 				<li class="title Mr">Mr</li>
 				<li class="title Dr">Dr</li>
 			</ul>
+			<ul class="files">
+				<p>path is data2.json</p>
+				<p>path is data1.json</p>
+				<li class="file 1">1</li>
+				<li class="file 2">2</li>
+				<li class="file 3">3</li>
+				<li class="file 4">4</li>
+				<li class="file a">a</li>
+				<li class="file b">b</li>
+				<li class="file c">c</li>
+			</ul>
 		</div>
 		<div class="outcome">
 			<div>
@@ -321,6 +332,14 @@
 			<ul class="titles">
 				<json-data src="data.json" select=".titles" each>
 					<li :class="title {*}"><span :to="*"></span></li>
+				</json-data>
+			</ul>
+			<ul class="files">
+				<json-data src="data.json" select=".files" each>
+					<p><span :to="path is {*}"></span></p>
+					<json-data :src="{*}" select=".values" each>
+						<li :class="file {*}"><span :to="{*}"></span></li>
+					</json-data>
 				</json-data>
 			</ul>
 		</div>
