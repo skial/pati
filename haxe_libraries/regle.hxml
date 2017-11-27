@@ -1,0 +1,8 @@
+# @install: lix --silent download "https://github.com/skial/regle/archive/ea94ba2947f8301dfa7e475e5134e41b19596cf4.tar.gz" into regle/0.0.1-alpha/github/ea94ba2947f8301dfa7e475e5134e41b19596cf4
+-D regle=0.0.1-alpha
+-cp ${HAXESHIM_LIBCACHE}/regle/0.0.1-alpha/github/ea94ba2947f8301dfa7e475e5134e41b19596cf4/src
+
+-lib yaml
+-lib utest
+-lib random
+-lib tink_core
