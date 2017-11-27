@@ -1,0 +1,8 @@
+# @install: lix --silent download "https://github.com/skial/jwenn/archive/9363c704b8ade4f9ae98dce892888b79f5aa9025.tar.gz" into jwenn/0.0.1-alpha/github/9363c704b8ade4f9ae98dce892888b79f5aa9025
+-D jwenn=0.0.1-alpha
+-cp ${HAXESHIM_LIBCACHE}/jwenn/0.0.1-alpha/github/9363c704b8ade4f9ae98dce892888b79f5aa9025/src
+
+-lib utest
+-lib mo-css
+-lib mo-html
+-lib ne

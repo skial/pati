@@ -1,7 +1,6 @@
 package uhx.pati;
 
 import js.html.*;
-import thx.Decimal;
 import js.Browser.*;
 import uhx.pati.EWait;
 import thx.unit.time.*;

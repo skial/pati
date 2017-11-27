@@ -1,0 +1,6 @@
+# @install: lix --silent download "https://github.com/skial/mo-html/archive/be9a8bdf3a503cb36f3b4b2aa16bfc606e82c763.tar.gz" into mo-html/0.0.1-alpha/github/be9a8bdf3a503cb36f3b4b2aa16bfc606e82c763
+-D mo-html=0.0.1-alpha
+-cp ${HAXESHIM_LIBCACHE}/mo-html/0.0.1-alpha/github/be9a8bdf3a503cb36f3b4b2aa16bfc606e82c763/src
+
+-lib mo
+-lib utest

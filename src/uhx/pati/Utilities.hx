@@ -1,11 +1,11 @@
 package uhx.pati;
 
 import js.html.*;
+import haxe.Int64;
 import tink.core.*;
 import js.Browser.*;
 import haxe.ds.IntMap;
 import uhx.pati.EWait;
-import thx.unit.time.*;
 import uhx.pati.Consts;
 import uhx.pati.CustomElement;
 
@@ -16,16 +16,18 @@ class Utilities {
 	
 	private static var isTimeUnit:EReg = ~/^ *([0-9]+(ms|s))? *$/im;
 	private static var getTimeUnit:EReg = ~/(ms|s)?/i;
-	private static var symbols:Array<Pair<String, Int->Millisecond>> = [
-		new Pair(Millisecond.symbol, Millisecond.fromInt), 
-		new Pair(Second.symbol, function(v) return (Second.fromInt(v):Millisecond))
+
+	// All results should be in milliseconds.
+	private static var symbols:Array<Pair<String, Int->Int64>> = [
+		new Pair('ms', Int64.ofInt),
+		new Pair('s', function(v) return Int64.fromFloat((v * 1) / 0.001)),
 	];
 	
 	public static function parseWaitAttribute(value:String):EWait {
 		var result = Until(0);
 		
 		if (isTimeUnit.match( value )) {
-			var unit = Millisecond.symbol;
+			var unit = 'ms';
 			var action = symbols[0].b;
 			
 			if (getTimeUnit.match( isTimeUnit.matched(1) )) for (symbol in symbols) {
@@ -38,7 +40,7 @@ class Utilities {
 				
 			}
 			
-			result = Until( action(Std.parseInt( value.substring( 0, value.length - unit.length ) )).toDecimal().toInt() );
+			result = Until( Int64.toInt( action(Std.parseInt( value.substring( 0, value.length - unit.length ) )) ) );
 			
 		} else if (value != '') {
 			// Assume its a css selector
