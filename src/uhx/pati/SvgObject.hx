@@ -16,16 +16,16 @@ using haxe.io.Path;
 class SvgObject extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<Array<Phantom>, Phantom> { 
 
     public static function main() {
-		var _ = new SvgObject();
-	}
+        var _ = new SvgObject();
+    }
 
     //
 
     @:isVar public var data(get, null):Null<String>;
 
     public function new(?prefix:String, ?name:String) {
-		super(prefix, name);
-	}
+        super(prefix, name);
+    }
 
     private function callSuperAttached() {
         super.attached();
@@ -70,7 +70,7 @@ class SvgObject extends ConvertTag<Array<Phantom>, Phantom> implements IProcesso
         return data.map( p -> p.outerHTML ).join('\n');
     }
 
-	public function onDataAvailable(data:Array<Phantom>):Void {
+    public function onDataAvailable(data:Array<Phantom>):Void {
         var svg = data.shift();
 
         for (attribute in attributes) switch attribute.name {
@@ -81,16 +81,16 @@ class SvgObject extends ConvertTag<Array<Phantom>, Phantom> implements IProcesso
 
         }
 
-		parentElement.appendChild( svg );
+        parentElement.appendChild( svg );
         
-		super.attached();
+        super.attached();
     }
 
-	public function find(data:Array<Phantom>, selector:String):Array<Phantom> {
+    public function find(data:Array<Phantom>, selector:String):Array<Phantom> {
         return [];
     }
 
-	public function handleNode(node:Phantom, data:Array<Phantom>, forEach:Bool = false):Void {
+    public function handleNode(node:Phantom, data:Array<Phantom>, forEach:Bool = false):Void {
         
     }
 
@@ -106,7 +106,7 @@ class SvgObject extends ConvertTag<Array<Phantom>, Phantom> implements IProcesso
     }
 
     private override function get_ignoredAttributes():Array<String> {
-		return super.get_ignoredAttributes().concat( [Data] );
-	}
+        return super.get_ignoredAttributes().concat( [Data] );
+    }
 
 }

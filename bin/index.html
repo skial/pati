@@ -1,649 +1,649 @@
 <html>
 <head>
-	<style>
-		body {
-			display: flex;
-			flex-direction: column;
-		}
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+        }
 
-		section div {
-			max-width: 46vw;
-    		min-width: 46vw;
-		}
+        section div {
+            max-width: 46vw;
+            min-width: 46vw;
+        }
 
-		.expected {
-			float: left;
-			border: 1px solid grey;
-		}
-		.outcome {
-			float: right;
-			border: 1px solid silver;
-		}
-		
-		.pass,
-		.outcome > :not(dom-dump),
-		.outcome > :not(dom-data),
-		.outcome > :not(json-data),
-		.outcome > :not(move-tags),
-		.outcome > :not(spec-bubbling),
-		.outcome > :not(spec-capturing) {
-			background: yellow;
-		}
-		.error,
-		.outcome > dom-dump,
-		.outcome > dom-data,
-		.outcome > json-data,
-		.outcome > move-tags,
-		.outcome > spec-bubbling,
-		.outcome > spec-capturing {
-			background: red;
-		}
-		
-		.css.data .test.data {
-			display: none;
-		}
+        .expected {
+            float: left;
+            border: 1px solid grey;
+        }
+        .outcome {
+            float: right;
+            border: 1px solid silver;
+        }
+        
+        .pass,
+        .outcome > :not(dom-dump),
+        .outcome > :not(dom-data),
+        .outcome > :not(json-data),
+        .outcome > :not(move-tags),
+        .outcome > :not(spec-bubbling),
+        .outcome > :not(spec-capturing) {
+            background: yellow;
+        }
+        .error,
+        .outcome > dom-dump,
+        .outcome > dom-data,
+        .outcome > json-data,
+        .outcome > move-tags,
+        .outcome > spec-bubbling,
+        .outcome > spec-capturing {
+            background: red;
+        }
+        
+        .css.data .test.data {
+            display: none;
+        }
 
-		svg {
-			max-width: 3em;
-			max-height: 3em;
-		}
-	</style>
-	<script>
-	var specValues = [1, 2, 3, 4, 5];
-	var json_data = {
-		"single":{
-			"value":"world"
-		},
-		"deep":{
-			"a":{
-				"next":"b",
-				"b":{
-					"next":"c",
-					"c":"123"
-				}
-			}
-		},
-		"collection":[
-			"a1", "a2", "b1", "b2", "c1", "c2"
-		],
-		"people":[
-			{"name":"foo", "age":1},
-			{"name":"bar", "age":2}
-		],
-		"person":{"name":"baz", "age":3},
-		"round":{
-			"about":{
-				"selector":".people"
-			}
-		},
-		"a1": "foo a1",
-		"a2": "foo a2",
-		"b1": "foo b1",
-		"b2": "foo b2",
-		"c1": "foo c1",
-		"c2": "foo c2",
-		"objects": [
-			{
-				"fullname": {
-					"first": "bob",
-					"last": "smith"
-				},
-				"values":[
-					'a', 'b', 'c'
-				]
-			},
-			{
-				"fullname": {
-					"first": "foo",
-					"last": "bar"
-				},
-				"values":[
-					'd', 'e', 'f'
-				]
-			},
-			{
-				"fullname": {
-					"first": "baz",
-					"last": "smith"
-				},
-				"values":[
-					'g', 'h', 'i'
-				]
-			}
-		],
-		"lastnames": ['bar', 'smith']
-	}
-	</script>
-	<!--<script src="ace.js"></script>-->
-	<link href="bubbling.html" rel="import" />
-	<link href="capturing.html" rel="import" />
-	<link href="dom.dump.html" rel="import" />
-	<link href="pati.article.html" rel="import" />
-	<link href="pati.body.html" rel="import" />
-	<link href="ace.html" rel="import" />
-	<!--<link href="convert.tag.html" rel="import" />
-	<link href="json.data.html" rel="import" />
-	<link href="dom.data.html" rel="import" />
-	<link href="move.tags.html" rel="import" />
-	-->
-	<script src="/js/spec.js"></script>
+        svg {
+            max-width: 3em;
+            max-height: 3em;
+        }
+    </style>
+    <script>
+    var specValues = [1, 2, 3, 4, 5];
+    var json_data = {
+        "single":{
+            "value":"world"
+        },
+        "deep":{
+            "a":{
+                "next":"b",
+                "b":{
+                    "next":"c",
+                    "c":"123"
+                }
+            }
+        },
+        "collection":[
+            "a1", "a2", "b1", "b2", "c1", "c2"
+        ],
+        "people":[
+            {"name":"foo", "age":1},
+            {"name":"bar", "age":2}
+        ],
+        "person":{"name":"baz", "age":3},
+        "round":{
+            "about":{
+                "selector":".people"
+            }
+        },
+        "a1": "foo a1",
+        "a2": "foo a2",
+        "b1": "foo b1",
+        "b2": "foo b2",
+        "c1": "foo c1",
+        "c2": "foo c2",
+        "objects": [
+            {
+                "fullname": {
+                    "first": "bob",
+                    "last": "smith"
+                },
+                "values":[
+                    'a', 'b', 'c'
+                ]
+            },
+            {
+                "fullname": {
+                    "first": "foo",
+                    "last": "bar"
+                },
+                "values":[
+                    'd', 'e', 'f'
+                ]
+            },
+            {
+                "fullname": {
+                    "first": "baz",
+                    "last": "smith"
+                },
+                "values":[
+                    'g', 'h', 'i'
+                ]
+            }
+        ],
+        "lastnames": ['bar', 'smith']
+    }
+    </script>
+    <!--<script src="ace.js"></script>-->
+    <link href="bubbling.html" rel="import" />
+    <link href="capturing.html" rel="import" />
+    <link href="dom.dump.html" rel="import" />
+    <link href="pati.article.html" rel="import" />
+    <link href="pati.body.html" rel="import" />
+    <link href="ace.html" rel="import" />
+    <!--<link href="convert.tag.html" rel="import" />
+    <link href="json.data.html" rel="import" />
+    <link href="dom.data.html" rel="import" />
+    <link href="move.tags.html" rel="import" />
+    -->
+    <script src="/js/spec.js"></script>
 </head>
 <body>
-	<h1>Pati Component Tests</h1>
-	<blockquote>
-		<p>
-			<em>Pati</em> is Haitian Creole for <em>Part</em>.
-		</p>
-	</blockquote>
-	<section class="spec bubbling">
-		<h2>Bubbling Phase</h2>
-		<div class="expected">
-			<p>Expected: 5 4 3 2 1</p>
-		</div>
-		<div class="outcome">
-			<p>Outcome: 
-				<spec-bubbling>
-					<spec-bubbling>
-						<spec-bubbling>
-							<spec-bubbling>
-								<spec-bubbling></spec-bubbling>
-							</spec-bubbling>
-						</spec-bubbling>
-					</spec-bubbling>
-				</spec-bubbling>
-			</p>
-		</div>
-	</section>
-	<section class="spec capturing">
-		<h2>Capturing Phase</h2>
-		<div class="expected">
-			<p>Expected: 1 2 3 4 5</p>
-		</div>
-		<div class="outcome">
-			<p>Outcome: 
-				<spec-capturing>
-					<spec-capturing>
-						<spec-capturing>
-							<spec-capturing>
-								<spec-capturing></spec-capturing>
-							</spec-capturing>
-						</spec-capturing>
-					</spec-capturing>
-				</spec-capturing>
-			</p>
-		</div>
-	</section>
-	<section class="convert tag">
-		<h2>Convert Tag</h2>
-		<div class="expected">
-			<p class="silly">A silly example.</p>
-			<ul class="silly bunch">
-				<li>
-					<p>Silly One</p>
-				</li>
-				<li>
-					<p>Silly Two</p>
-				</li>
-			</ul>
-			<div class="a1">
-				<div class="sub a1">
-					<ul class="template dumped">
-						<li>1</li>
-						<li>2</li>
-						<li>3</li>
-						<li>4</li>
-						<li>5</li>
-					</ul>
-					<div class="sub"></div>
-				</div>
-			</div>
-		</div>
-		<div class="outcome">
-			<convert-tag to:p class="silly">A silly example.</convert-tag>
-			<convert-tag to:ul class="silly bunch">
-				<convert-tag to:li>
-					<convert-tag to:p>Silly One</convert-tag>
-				</convert-tag>
-				<convert-tag to:li>
-					<convert-tag to:p>Silly Two</convert-tag>
-				</convert-tag>
-			</convert-tag>
-			<convert-tag to:div class="a1">
-				<div class="sub a1">
-					
-				</div>
-				<move-tags to=".convert.tag .outcome .sub.a1">
-					<dom-dump></dom-dump>
-				</move-tags>
-			</convert-tag>
-		</div>
-	</section>
-	<section class="json data">
-		<h2>Json Data</h2>
-		<div class="expected">
-			<div>
-				hello
-				world
-			</div>
-			<div class="dud">
-				hello static world
-			</div>
-			<p id="1">hello world</p>
-			<ul id="2">
-				<li class="foo" id="age-1">
-					foo is 1 years old.
-				</li>
-				<li class="bar" id="age-2">
-					bar is 2 years old.
-				</li>
-			</ul>
-			<ul id="3">
-				<li class="baz" id="age-3">
-					baz is 3 years old.
-				</li>
-			</ul>
-			<div class="a1">a1<div class="a2">a2<div class="b1">b1</div></div></div>
-			<h4>a1</h4>
-			<ul>
-				<li class="collection__a1">I am foo a1</li>
-			</ul>
-			<h4>a2</h4>
-			<ul>
-				<li class="collection__a2">I am foo a2</li>
-			</ul>
-			<h4>b1</h4>
-			<ul>
-				<li class="collection__b1">I am foo b1</li>
-			</ul>
-			<h4>b2</h4>
-			<ul>
-				<li class="collection__b2">I am foo b2</li>
-			</ul>
-			<h4>c1</h4>
-			<ul>
-				<li class="collection__c1">I am foo c1</li>
-			</ul>
-			<h4>c2</h4>
-			<ul>
-				<li class="collection__c2">I am foo c2</li>
-			</ul>
-			<h4>bar</h4>
-			<ul>
-				<li>
-					<p>Hello from foo bar</p>
-				</li>
-			</ul>
-			<h4>smith</h4>
-			<ul>
-				<li>
-					<p>Hello from bob smith</p>
-				</li>
-				<li>
-					<p>Hello from baz smith</p>
-				</li>
-			</ul>
-			<ul class="titles">
-				<li class="title Mr">Mr</li>
-				<li class="title Dr">Dr</li>
-			</ul>
-			<ul class="files">
-				<li><p>path is /json/data2.json</p></li>
-				<li class="file 1">1</li>
-				<li class="file 2">2</li>
-				<li class="file 3">3</li>
-				<li class="file 4">4</li>
-				<li><p>path is /json/data1.json</p></li>
-				<li class="file a">a</li>
-				<li class="file b">b</li>
-				<li class="file c">c</li>
-			</ul>
-		</div>
-		<div class="outcome">
-			<div>
-				hello
-				<json-data select=".single .value"></json-data>
-			</div>
-			<json-data class="dud" select=".single .value" to:div>
-				<span :to="hello static world"></span>
-			</json-data>
-			<json-data select=".single .value" id="1" to:p>
-				<span :to="hello {*}"></span>
-			</json-data>
-			<json-data id="2" select=".people" to:ul each>
-				<li :class=".name" :id="age-{.age}">
-					<span :to="{.name} is {.age} years old."></span>
-				</li>
-			</json-data>
-			<json-data id="3" select=".person" to:ul>
-				<li :class=".name" :id="age-{.age}">
-					<span :to="{.name} is {.age} years old."></span>
-				</li>
-			</json-data>
-			<json-data select=".collection" :class=":first-child" to:div>
-				<span :to=":first-child"></span>
-				<json-data select=":nth-child(n+2)" :class=":first-child" to:div>
-					<span :to=":first-child"></span>
-					<json-data select=":nth-child(n+2)" :class=":first-child" to:div>
-						<span :to=":first-child"></span>
-					</json-data>
-				</json-data>
-			</json-data>
-			<json-data select=".collection" each>
-				<h4><span :to="*"></span></h4>
-				<ul>
-					<json-data to:li :select=".{*}" :class="collection__{*}" retarget>
-						<span :to="I am {*}"></span>
-					</json-data>
-				</ul>
-			</json-data>
-			<json-data select=".lastnames" each>
-				<h4><span :to="*"></span></h4>
-				<ul>
-					<json-data :select=".objects :has([last='{*}'])" retarget each>
-						<li>
-							<p><span :to="Hello from {.fullname .first} {.fullname .last}"></span></p>
-						</li>
-					</json-data>
-				</ul>
-			</json-data>
-			<ul class="titles">
-				<json-data src="/json/data.json" select=".titles" each>
-					<li :class="title {*}"><span :to="*"></span></li>
-				</json-data>
-			</ul>
-			<ul class="files">
-				<json-data src="/json/data.json" select=".files" each>
-					<li><p><span :to="path is {*}"></span></p></li>
-					<json-data :src="{*}" select=".values" each>
-						<li :class="file {*}"><span :to="{*}"></span></li>
-					</json-data>
-				</json-data>
-			</ul>
-		</div>
-	</section>
-	<section class="dom data">
-		<h2>Dom Data</h2>
-		<div class="test data">
-			<div class="hi">
-				hello
-			</div>
-			<div class="hello">
-				world
-			</div>
-		</div>
-		<div class="expected">
-			<div>
-				hello
-				<div class="hello">
-					world
-				</div>
-			</div>
-			<div>
-				hello
-				world
-			</div>
-			<div>
-				hello
-				world
-			</div>
-			<div>
-				world
-				hello
-			</div>
-			<span class="nested">hello world</span>
-			<div class="hello">
-				hello
-			</div>
-			<div data-foo=".hello-world">
-				hello
-			</div>
-			<div class="a1">
-				<div>Hello World | Removable DOM.</div>
-			</div>
-			<div class="a2">
-				<div>Hello World | Removable DOM.</div>
-				<div>Hello World | Removable</div>
-			</div>
-		</div>
-		<div class="outcome">
-			<div>
-				<dom-data select=".dom.data .test.data > .hello">
-					hello
-				</dom-data>
-			</div>
-			<div>
-				<dom-data select=".dom.data .test.data > .hello" use:text>
-					hello
-				</dom-data>
-			</div>
-			<dom-data select=".dom.data .test.data > .hello" use:text to:div>
-				hello
-			</dom-data>
-			<dom-data select=".dom.data .test.data > .hello" use:text to:div +:>
-				hello
-			</dom-data>
-			<dom-data class="nested" select=".dom.data .test.data > .hi" use:text to:span +:>
-				<dom-data select=".dom.data .test.data > .hello" use:text></dom-data>
-			</dom-data>
-			<dom-data select=".dom.data .test.data .hi" :class="*" use:text to:div></dom-data>
-			<dom-data select=".dom.data .test.data .hi" :data-foo=".{*}-world" use:text to:div></dom-data>
-			<div class="a1">
-				<span>Hello World | Removable</span>
-				<dom-data select=".dom.data .outcome .a1 span" use:text target:remove to:div +:> DOM.</dom-data>
-			</div>
-			<div class="a2">
-				<span>Hello World | Removable</span>
-				<dom-data select=".dom.data .outcome .a2 span" use:text to:div +:> DOM.</dom-data>
-				<dom-data select=".dom.data .outcome .a2 span" use:text target:move to:div></dom-data>
-			</div>
-		</div>
-	</section>
-	<section class="move tags">
-		<h2>Move Tags</h2>
-		<div class="expected">
-			<div class="a1">
-				<p>
-					hello world
-				</p>
-			</div>
-			<div class="a2">
-				<span class="silly">
-					<p>Hello World</p>
-				</span>
-			</div>
-			<div class="a3">
-				<p>Hello</p>
-				<p>Haxe</p>
-				<p>World</p>
-			</div>
-			<div class="a4">
-				<p>Foo</p>
-				<ul class="template dumped">
-					<li>1</li>
-					<li>2</li>
-					<li>3</li>
-					<li>4</li>
-					<li>5</li>
-				</ul>
-				<div class="sub"></div>
-				<p>Bar</p>
-			</div>
-		</div>
-		<div class="outcome">
-			<div class="a1">
-				
-			</div>
-			<div class="a2">
-				
-			</div>
-			<div class="a3">
-				<p>Haxe</p>
-			</div>
-			<div class="a4">
-				
-			</div>
-			<move-tags to=".move.tags .outcome .a1">
-				<p>
-					hello world
-				</p>
-			</move-tags>
-			<move-tags to=".move.tags .outcome .a2">
-				<span class="silly"></span>
-				<move-tags to=".move.tags .outcome .silly">
-					<p>Hello World</p>
-				</move-tags>
-			</move-tags>
-			<move-tags to=".move.tags .outcome .a3" +:>
-				<p>Hello</p>
-			</move-tags>
-			<move-tags to=".move.tags .outcome .a3" :+>
-				<p>World</p>
-			</move-tags>
-			<move-tags to=".move.tags .outcome .a4">
-				<p>Foo</p>
-				<dom-dump></dom-dump>
-				<p>Bar</p>
-			</move-tags>
-		</div>
-	</section>
-	<section class="template insertion">
-		<h2>Template Insertion</h2>
-		<div class="expected">
-			<div class="a1">
-				<ul class="template dumped">
-					<li>1</li>
-					<li>2</li>
-					<li>3</li>
-					<li>4</li>
-					<li>5</li>
-				</ul>
-				<div class="sub"></div>
-			</div>
-			<div class="a2">
-				<ul class="template dumped">
-					<li>1</li>
-					<li>2</li>
-					<li>3</li>
-					<li>4</li>
-					<li>5</li>
-				</ul>
-				<div class="sub">
-					<ul class="template dumped">
-						<li>1</li>
-						<li>2</li>
-						<li>3</li>
-						<li>4</li>
-						<li>5</li>
-					</ul>
-					<div class="sub">
-						<ul class="template dumped">
-							<li>1</li>
-							<li>2</li>
-							<li>3</li>
-							<li>4</li>
-							<li>5</li>
-						</ul>
-						<div class="sub">
-							<ul class="template dumped">
-								<li>1</li>
-								<li>2</li>
-								<li>3</li>
-								<li>4</li>
-								<li>5</li>
-							</ul>
-							<div class="sub"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="a3">
-				<h3>Article Title</h3>
-				<ul class="template dumped">
-					<li>1</li>
-					<li>2</li>
-					<li>3</li>
-					<li>4</li>
-					<li>5</li>
-				</ul>
-				<div class="sub"></div>
-				<p>Hello World</p>
-				<blockquote>
-					Test Quote
-				</blockquote>
-			</div>
-			<div class="a4">
-				<h3>Article Title</h3>
-				<ul class="template dumped">
-					<li>1</li>
-					<li>2</li>
-					<li>3</li>
-					<li>4</li>
-					<li>5</li>
-				</ul>
-				<div class="sub"></div>
-				<p>Hello World</p>
-				<blockquote>Test Quote for A4.</blockquote>
-				<p>Article Body</p>
-				<img />
-				<p>Article Conclusion</p>
-			</div>
-		</div>
-		<div class="outcome">
-			<div class="a1">
-				<dom-dump></dom-dump>
-			</div>
-			<div class="a2">
-				<dom-dump id="parent">
-					<dom-dump id="sub1">
-						<dom-dump id="sub2">
-							<dom-dump id="sub3"></dom-dump>
-						</dom-dump>
-					</dom-dump>
-				</dom-dump>
-			</div>
-			<div class="a3">
-				<pati-article>
-					<blockquote>
-						Test Quote
-					</blockquote>
-				</pati-article>
-			</div>
-			<div class="a4">
-				<pati-article>
-					<blockquote>Test Quote for A4.</blockquote>
-					<pati-body>
-						<img />
-					</pati-body>
-				</pati-article>
-			</div>
-		</div>
-	</section>
-	<section class="custom element waiting">
-		<h2>Paused Execution</h2>
-		<div class="expected">
-			<div class="a1">
-				<div class="a1 sub">
-					<p>Hello waiting world.</p>
-				</div>
-			</div>
-		</div>
-		<div class="outcome">
-			<div class="a1">
-				<convert-tag class="a1 sub" to:div wait="100ms"></convert-tag>
-				<move-tags to=".custom.element.waiting .outcome div.a1.sub" wait>
-					<p>Hello waiting world.</p>
-				</move-tags>
-			</div>
-		</div>
-	</section>
-	<section class="svg object">
-		<div class="expected">
-			<svg-obj class="twitter" data="/img/svg/twitter.svg">
-			</svg-obj>
-		</div>
-		<div class="outcome">
-			<svg class="twitter" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-label="Twitter" role="img"><rect fill="#1da1f3" height="512" rx="15%" width="512"/><path d="m465 135c-14 7-31 11-47 13 17-10 30-27 37-46-15 10-34 16-52 20a83 83 0 0 0 -141 75c-68-3-129-35-169-85a80 80 0 0 0 26 109c-13 0-26-4-37-9 0 39 28 72 65 80-12 3-25 4-37 2 10 33 41 57 77 57-42 30-77 38-122 34 170 111 378-32 359-208 16-11 30-25 41-42z" fill="#fff"/></svg>
-		</div>
-	</section>
+    <h1>Pati Component Tests</h1>
+    <blockquote>
+        <p>
+            <em>Pati</em> is Haitian Creole for <em>Part</em>.
+        </p>
+    </blockquote>
+    <section class="spec bubbling">
+        <h2>Bubbling Phase</h2>
+        <div class="expected">
+            <p>Expected: 5 4 3 2 1</p>
+        </div>
+        <div class="outcome">
+            <p>Outcome: 
+                <spec-bubbling>
+                    <spec-bubbling>
+                        <spec-bubbling>
+                            <spec-bubbling>
+                                <spec-bubbling></spec-bubbling>
+                            </spec-bubbling>
+                        </spec-bubbling>
+                    </spec-bubbling>
+                </spec-bubbling>
+            </p>
+        </div>
+    </section>
+    <section class="spec capturing">
+        <h2>Capturing Phase</h2>
+        <div class="expected">
+            <p>Expected: 1 2 3 4 5</p>
+        </div>
+        <div class="outcome">
+            <p>Outcome: 
+                <spec-capturing>
+                    <spec-capturing>
+                        <spec-capturing>
+                            <spec-capturing>
+                                <spec-capturing></spec-capturing>
+                            </spec-capturing>
+                        </spec-capturing>
+                    </spec-capturing>
+                </spec-capturing>
+            </p>
+        </div>
+    </section>
+    <section class="convert tag">
+        <h2>Convert Tag</h2>
+        <div class="expected">
+            <p class="silly">A silly example.</p>
+            <ul class="silly bunch">
+                <li>
+                    <p>Silly One</p>
+                </li>
+                <li>
+                    <p>Silly Two</p>
+                </li>
+            </ul>
+            <div class="a1">
+                <div class="sub a1">
+                    <ul class="template dumped">
+                        <li>1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li>4</li>
+                        <li>5</li>
+                    </ul>
+                    <div class="sub"></div>
+                </div>
+            </div>
+        </div>
+        <div class="outcome">
+            <convert-tag to:p class="silly">A silly example.</convert-tag>
+            <convert-tag to:ul class="silly bunch">
+                <convert-tag to:li>
+                    <convert-tag to:p>Silly One</convert-tag>
+                </convert-tag>
+                <convert-tag to:li>
+                    <convert-tag to:p>Silly Two</convert-tag>
+                </convert-tag>
+            </convert-tag>
+            <convert-tag to:div class="a1">
+                <div class="sub a1">
+                    
+                </div>
+                <move-tags to=".convert.tag .outcome .sub.a1">
+                    <dom-dump></dom-dump>
+                </move-tags>
+            </convert-tag>
+        </div>
+    </section>
+    <section class="json data">
+        <h2>Json Data</h2>
+        <div class="expected">
+            <div>
+                hello
+                world
+            </div>
+            <div class="dud">
+                hello static world
+            </div>
+            <p id="1">hello world</p>
+            <ul id="2">
+                <li class="foo" id="age-1">
+                    foo is 1 years old.
+                </li>
+                <li class="bar" id="age-2">
+                    bar is 2 years old.
+                </li>
+            </ul>
+            <ul id="3">
+                <li class="baz" id="age-3">
+                    baz is 3 years old.
+                </li>
+            </ul>
+            <div class="a1">a1<div class="a2">a2<div class="b1">b1</div></div></div>
+            <h4>a1</h4>
+            <ul>
+                <li class="collection__a1">I am foo a1</li>
+            </ul>
+            <h4>a2</h4>
+            <ul>
+                <li class="collection__a2">I am foo a2</li>
+            </ul>
+            <h4>b1</h4>
+            <ul>
+                <li class="collection__b1">I am foo b1</li>
+            </ul>
+            <h4>b2</h4>
+            <ul>
+                <li class="collection__b2">I am foo b2</li>
+            </ul>
+            <h4>c1</h4>
+            <ul>
+                <li class="collection__c1">I am foo c1</li>
+            </ul>
+            <h4>c2</h4>
+            <ul>
+                <li class="collection__c2">I am foo c2</li>
+            </ul>
+            <h4>bar</h4>
+            <ul>
+                <li>
+                    <p>Hello from foo bar</p>
+                </li>
+            </ul>
+            <h4>smith</h4>
+            <ul>
+                <li>
+                    <p>Hello from bob smith</p>
+                </li>
+                <li>
+                    <p>Hello from baz smith</p>
+                </li>
+            </ul>
+            <ul class="titles">
+                <li class="title Mr">Mr</li>
+                <li class="title Dr">Dr</li>
+            </ul>
+            <ul class="files">
+                <li><p>path is /json/data2.json</p></li>
+                <li class="file 1">1</li>
+                <li class="file 2">2</li>
+                <li class="file 3">3</li>
+                <li class="file 4">4</li>
+                <li><p>path is /json/data1.json</p></li>
+                <li class="file a">a</li>
+                <li class="file b">b</li>
+                <li class="file c">c</li>
+            </ul>
+        </div>
+        <div class="outcome">
+            <div>
+                hello
+                <json-data select=".single .value"></json-data>
+            </div>
+            <json-data class="dud" select=".single .value" to:div>
+                <span :to="hello static world"></span>
+            </json-data>
+            <json-data select=".single .value" id="1" to:p>
+                <span :to="hello {*}"></span>
+            </json-data>
+            <json-data id="2" select=".people" to:ul each>
+                <li :class=".name" :id="age-{.age}">
+                    <span :to="{.name} is {.age} years old."></span>
+                </li>
+            </json-data>
+            <json-data id="3" select=".person" to:ul>
+                <li :class=".name" :id="age-{.age}">
+                    <span :to="{.name} is {.age} years old."></span>
+                </li>
+            </json-data>
+            <json-data select=".collection" :class=":first-child" to:div>
+                <span :to=":first-child"></span>
+                <json-data select=":nth-child(n+2)" :class=":first-child" to:div>
+                    <span :to=":first-child"></span>
+                    <json-data select=":nth-child(n+2)" :class=":first-child" to:div>
+                        <span :to=":first-child"></span>
+                    </json-data>
+                </json-data>
+            </json-data>
+            <json-data select=".collection" each>
+                <h4><span :to="*"></span></h4>
+                <ul>
+                    <json-data to:li :select=".{*}" :class="collection__{*}" retarget>
+                        <span :to="I am {*}"></span>
+                    </json-data>
+                </ul>
+            </json-data>
+            <json-data select=".lastnames" each>
+                <h4><span :to="*"></span></h4>
+                <ul>
+                    <json-data :select=".objects :has([last='{*}'])" retarget each>
+                        <li>
+                            <p><span :to="Hello from {.fullname .first} {.fullname .last}"></span></p>
+                        </li>
+                    </json-data>
+                </ul>
+            </json-data>
+            <ul class="titles">
+                <json-data src="/json/data.json" select=".titles" each>
+                    <li :class="title {*}"><span :to="*"></span></li>
+                </json-data>
+            </ul>
+            <ul class="files">
+                <json-data src="/json/data.json" select=".files" each>
+                    <li><p><span :to="path is {*}"></span></p></li>
+                    <json-data :src="{*}" select=".values" each>
+                        <li :class="file {*}"><span :to="{*}"></span></li>
+                    </json-data>
+                </json-data>
+            </ul>
+        </div>
+    </section>
+    <section class="dom data">
+        <h2>Dom Data</h2>
+        <div class="test data">
+            <div class="hi">
+                hello
+            </div>
+            <div class="hello">
+                world
+            </div>
+        </div>
+        <div class="expected">
+            <div>
+                hello
+                <div class="hello">
+                    world
+                </div>
+            </div>
+            <div>
+                hello
+                world
+            </div>
+            <div>
+                hello
+                world
+            </div>
+            <div>
+                world
+                hello
+            </div>
+            <span class="nested">hello world</span>
+            <div class="hello">
+                hello
+            </div>
+            <div data-foo=".hello-world">
+                hello
+            </div>
+            <div class="a1">
+                <div>Hello World | Removable DOM.</div>
+            </div>
+            <div class="a2">
+                <div>Hello World | Removable DOM.</div>
+                <div>Hello World | Removable</div>
+            </div>
+        </div>
+        <div class="outcome">
+            <div>
+                <dom-data select=".dom.data .test.data > .hello">
+                    hello
+                </dom-data>
+            </div>
+            <div>
+                <dom-data select=".dom.data .test.data > .hello" use:text>
+                    hello
+                </dom-data>
+            </div>
+            <dom-data select=".dom.data .test.data > .hello" use:text to:div>
+                hello
+            </dom-data>
+            <dom-data select=".dom.data .test.data > .hello" use:text to:div +:>
+                hello
+            </dom-data>
+            <dom-data class="nested" select=".dom.data .test.data > .hi" use:text to:span +:>
+                <dom-data select=".dom.data .test.data > .hello" use:text></dom-data>
+            </dom-data>
+            <dom-data select=".dom.data .test.data .hi" :class="*" use:text to:div></dom-data>
+            <dom-data select=".dom.data .test.data .hi" :data-foo=".{*}-world" use:text to:div></dom-data>
+            <div class="a1">
+                <span>Hello World | Removable</span>
+                <dom-data select=".dom.data .outcome .a1 span" use:text target:remove to:div +:> DOM.</dom-data>
+            </div>
+            <div class="a2">
+                <span>Hello World | Removable</span>
+                <dom-data select=".dom.data .outcome .a2 span" use:text to:div +:> DOM.</dom-data>
+                <dom-data select=".dom.data .outcome .a2 span" use:text target:move to:div></dom-data>
+            </div>
+        </div>
+    </section>
+    <section class="move tags">
+        <h2>Move Tags</h2>
+        <div class="expected">
+            <div class="a1">
+                <p>
+                    hello world
+                </p>
+            </div>
+            <div class="a2">
+                <span class="silly">
+                    <p>Hello World</p>
+                </span>
+            </div>
+            <div class="a3">
+                <p>Hello</p>
+                <p>Haxe</p>
+                <p>World</p>
+            </div>
+            <div class="a4">
+                <p>Foo</p>
+                <ul class="template dumped">
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                </ul>
+                <div class="sub"></div>
+                <p>Bar</p>
+            </div>
+        </div>
+        <div class="outcome">
+            <div class="a1">
+                
+            </div>
+            <div class="a2">
+                
+            </div>
+            <div class="a3">
+                <p>Haxe</p>
+            </div>
+            <div class="a4">
+                
+            </div>
+            <move-tags to=".move.tags .outcome .a1">
+                <p>
+                    hello world
+                </p>
+            </move-tags>
+            <move-tags to=".move.tags .outcome .a2">
+                <span class="silly"></span>
+                <move-tags to=".move.tags .outcome .silly">
+                    <p>Hello World</p>
+                </move-tags>
+            </move-tags>
+            <move-tags to=".move.tags .outcome .a3" +:>
+                <p>Hello</p>
+            </move-tags>
+            <move-tags to=".move.tags .outcome .a3" :+>
+                <p>World</p>
+            </move-tags>
+            <move-tags to=".move.tags .outcome .a4">
+                <p>Foo</p>
+                <dom-dump></dom-dump>
+                <p>Bar</p>
+            </move-tags>
+        </div>
+    </section>
+    <section class="template insertion">
+        <h2>Template Insertion</h2>
+        <div class="expected">
+            <div class="a1">
+                <ul class="template dumped">
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                </ul>
+                <div class="sub"></div>
+            </div>
+            <div class="a2">
+                <ul class="template dumped">
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                </ul>
+                <div class="sub">
+                    <ul class="template dumped">
+                        <li>1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li>4</li>
+                        <li>5</li>
+                    </ul>
+                    <div class="sub">
+                        <ul class="template dumped">
+                            <li>1</li>
+                            <li>2</li>
+                            <li>3</li>
+                            <li>4</li>
+                            <li>5</li>
+                        </ul>
+                        <div class="sub">
+                            <ul class="template dumped">
+                                <li>1</li>
+                                <li>2</li>
+                                <li>3</li>
+                                <li>4</li>
+                                <li>5</li>
+                            </ul>
+                            <div class="sub"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="a3">
+                <h3>Article Title</h3>
+                <ul class="template dumped">
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                </ul>
+                <div class="sub"></div>
+                <p>Hello World</p>
+                <blockquote>
+                    Test Quote
+                </blockquote>
+            </div>
+            <div class="a4">
+                <h3>Article Title</h3>
+                <ul class="template dumped">
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                </ul>
+                <div class="sub"></div>
+                <p>Hello World</p>
+                <blockquote>Test Quote for A4.</blockquote>
+                <p>Article Body</p>
+                <img />
+                <p>Article Conclusion</p>
+            </div>
+        </div>
+        <div class="outcome">
+            <div class="a1">
+                <dom-dump></dom-dump>
+            </div>
+            <div class="a2">
+                <dom-dump id="parent">
+                    <dom-dump id="sub1">
+                        <dom-dump id="sub2">
+                            <dom-dump id="sub3"></dom-dump>
+                        </dom-dump>
+                    </dom-dump>
+                </dom-dump>
+            </div>
+            <div class="a3">
+                <pati-article>
+                    <blockquote>
+                        Test Quote
+                    </blockquote>
+                </pati-article>
+            </div>
+            <div class="a4">
+                <pati-article>
+                    <blockquote>Test Quote for A4.</blockquote>
+                    <pati-body>
+                        <img />
+                    </pati-body>
+                </pati-article>
+            </div>
+        </div>
+    </section>
+    <section class="custom element waiting">
+        <h2>Paused Execution</h2>
+        <div class="expected">
+            <div class="a1">
+                <div class="a1 sub">
+                    <p>Hello waiting world.</p>
+                </div>
+            </div>
+        </div>
+        <div class="outcome">
+            <div class="a1">
+                <convert-tag class="a1 sub" to:div wait="100ms"></convert-tag>
+                <move-tags to=".custom.element.waiting .outcome div.a1.sub" wait>
+                    <p>Hello waiting world.</p>
+                </move-tags>
+            </div>
+        </div>
+    </section>
+    <section class="svg object">
+        <div class="expected">
+            <svg-obj class="twitter" data="/img/svg/twitter.svg">
+            </svg-obj>
+        </div>
+        <div class="outcome">
+            <svg class="twitter" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-label="Twitter" role="img"><rect fill="#1da1f3" height="512" rx="15%" width="512"/><path d="m465 135c-14 7-31 11-47 13 17-10 30-27 37-46-15 10-34 16-52 20a83 83 0 0 0 -141 75c-68-3-129-35-169-85a80 80 0 0 0 26 109c-13 0-26-4-37-9 0 39 28 72 65 80-12 3-25 4-37 2 10 33 41 57 77 57-42 30-77 38-122 34 170 111 378-32 359-208 16-11 30-25 41-42z" fill="#fff"/></svg>
+        </div>
+    </section>
 </body>
 </html>
