@@ -287,12 +287,12 @@
 				<li class="title Dr">Dr</li>
 			</ul>
 			<ul class="files">
-				<p>path is data2.json</p>
-				<p>path is data1.json</p>
+				<li><p>path is /json/data2.json</p></li>
 				<li class="file 1">1</li>
 				<li class="file 2">2</li>
 				<li class="file 3">3</li>
 				<li class="file 4">4</li>
+				<li><p>path is /json/data1.json</p></li>
 				<li class="file a">a</li>
 				<li class="file b">b</li>
 				<li class="file c">c</li>
@@ -353,7 +353,7 @@
 			</ul>
 			<ul class="files">
 				<json-data src="/json/data.json" select=".files" each>
-					<p><span :to="path is {*}"></span></p>
+					<li><p><span :to="path is {*}"></span></p></li>
 					<json-data :src="{*}" select=".values" each>
 						<li :class="file {*}"><span :to="{*}"></span></li>
 					</json-data>
