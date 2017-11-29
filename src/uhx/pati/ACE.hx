@@ -16,6 +16,7 @@ class ACE {
 		var c = new ConvertTag('convert', 'tag');
 		var h = new DocumentHead('document', 'head');
 		var b = new DocumentBody('document', 'body');
+		var i = new SvgObject('svg', 'obj');
 	}
 	
 }
