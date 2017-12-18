@@ -13,7 +13,7 @@ using haxe.io.Path;
     var SvgNamespace = "http://www.w3.org/2000/svg";
 }
 
-class SvgObject extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<Array<Phantom>, Phantom> { 
+class SvgObject extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<Array<Phantom>, Phantom> {
 
     public static function main() {
         var _ = new SvgObject();
@@ -21,7 +21,7 @@ class SvgObject extends ConvertTag<Array<Phantom>, Phantom> implements IProcesso
 
     //
 
-    @:isVar public var data(get, null):Null<String>;
+    @:isVar public var src(get, null):Null<String>;
 
     public function new(?prefix:String, ?name:String) {
         super(prefix, name);
@@ -32,9 +32,9 @@ class SvgObject extends ConvertTag<Array<Phantom>, Phantom> implements IProcesso
     }
 
     public override function attached():Void {
-        if (data != null) {
-            console.log( data );
-            var content:Surprise<Response, Error> = window.fetch( data );
+        if (src != null) {
+            console.log( src );
+            var content:Surprise<Response, Error> = window.fetch( src );
             content.handle( function(o) switch o {
                 case Success(r):
                     Future.ofJsPromise( r.text() ).handle( function(o) switch o {
@@ -96,17 +96,17 @@ class SvgObject extends ConvertTag<Array<Phantom>, Phantom> implements IProcesso
 
     //
 
-    private function get_data():Null<String> {
-        if (data == null && hasAttribute(Data)) {
-            data = getAttribute(Data);
+    private function get_src():Null<String> {
+        if (src == null && hasAttribute(Src)) {
+            src = getAttribute(Src);
 
         }
 
-        return data;
+        return src;
     }
 
     private override function get_ignoredAttributes():Array<String> {
-        return super.get_ignoredAttributes().concat( [Data] );
+        return super.get_ignoredAttributes().concat( [Src] );
     }
 
 }
