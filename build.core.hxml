@@ -9,15 +9,17 @@
 #-lib closure
 
 -dce full
+-D js_es=6 
 -D analyzer-optimize
+#-D eval-stack
 
-#-D closure_advanced
+-D closure_advanced
 #-D closure_overwrite
 #-D closure_prettyprint
-
---each
+#-D closure_language_in=ECMASCRIPT5
 
 -main uhx.pati.ACE
--js bin/ace.js
+-js bin/js/ace.js
 
--cmd uglifyjs bin/ace.js --screw-ie8 --reserve-domprops -c collapse_vars,reduce_vars -o bin/ace.js
+#-cmd uglifyjs bin/js/ace.js --mangle --screw-ie8 --reserve-domprops -c collapse_vars,reduce_vars -o bin/js/ace.js
+-cmd uglifyjs bin/js/ace.js --mangle -c collapse_vars,reduce_vars,drop_console,passes=2,unsafe=true -o bin/js/ace.js

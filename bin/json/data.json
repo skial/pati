@@ -1,0 +1,8 @@
+{
+    "name":{
+        "titles": ["Mr", "Dr"],
+        "first":"Bob",
+        "last": "Smith"
+    },
+    "files": ["/json/data1.json", "/json/data2.json"]
+}

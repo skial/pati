@@ -10,55 +10,62 @@
 
 -debug
 -D runtime
-#-dce full
+-D js_es=6
+-D analyzer-optimize
+-dce full
 
 --each
 
 -dce full
 -main Main
--js bin/spec.js
+-js bin/js/spec.js
 
 --next
 
 -main uhx.pati.Bubbling
--js bin/bubbling.spec.js
+-js bin/js/bubbling.spec.js
 
 --next
 
 -main uhx.pati.Capturing
--js bin/capturing.spec.js
+-js bin/js/capturing.spec.js
 
 --next
 
 -main uhx.pati.ConvertTag
--js bin/convert.tag.js
+-js bin/js/convert.tag.js
 
 --next
 
 -main uhx.pati.JsonData
--js bin/json.data.js
+-js bin/js/json.data.js
 
 --next
 
 -main uhx.pati.DomData
--js bin/dom.data.js
+-js bin/js/dom.data.js
 
 --next
 
 -main uhx.pati.MoveTags
--js bin/move.tags.js
+-js bin/js/move.tags.js
 
 --next
 
 -main uhx.pati.DocumentBody
--js bin/document.body.js
+-js bin/js/document.body.js
 
 --next
 
 -main uhx.pati.DocumentHead
--js bin/document.head.js
+-js bin/js/document.head.js
+
+--next
+
+-main uhx.pati.SvgObject
+-js bin/js/svg.obj.js
 
 --next
 
 -main uhx.pati.ACE
--js bin/ace.js
+-js bin/js/ace.js

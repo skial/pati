@@ -183,7 +183,11 @@ class Utilities {
 		} else {
 			// Attempt to match values with the entire attribute value.
 			var matches = pair.b.find( pair.a, value );
-			result = pair.b.stringify( cast matches );
+
+			if (matches.length > 0) {
+				result = pair.b.stringify( cast matches );
+
+			}
 			
 		}
 		

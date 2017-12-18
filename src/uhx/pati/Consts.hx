@@ -68,6 +68,10 @@ package uhx.pati;
 	var ScopedData = 'scoped-data';
 }
 
+@:enum @:forward abstract SvgObjectAttributes(String) from String to String {
+	var Data = 'data';
+}
+
 @:enum @:forward abstract StorageConsts(String) from String to String {
 	var Storage = 'uhx_pati_component_storage';
 }
