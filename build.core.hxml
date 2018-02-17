@@ -11,6 +11,7 @@
 -dce full
 -D js_es=6 
 -D analyzer-optimize
+--no-traces
 #-D eval-stack
 
 -D closure_advanced

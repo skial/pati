@@ -10,6 +10,7 @@ import tink.core.Callback;
 import haxe.DynamicAccess;
 import uhx.select.JsonQuery;
 
+using StringTools;
 using tink.CoreApi;
 using uhx.pati.Utilities;
 
@@ -48,7 +49,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 	
 	public override function attached():Void {
 		if (!isCustomChild) {
-			if (hasAttribute(Src) || hasAttribute('$Process$Src')) {		
+			if (hasAttribute(Src) || hasAttribute('$Process$Src')) {
 				#if hxnodejs
 
 				#else
@@ -192,6 +193,8 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 			node.setAttribute(PendingRemoval, True);
 			
 		} else {
+			// TODO 
+			// HANDLE OTHER CUSTOM ELEMENTS - WTF
 			if (node.tagName.toLowerCase() == htmlFullname) {
 				var skipScope = false;
 				var modified = node.clone();
@@ -211,6 +214,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 				}
 				
 				for (attribute in [for (a in node.attributes) a]) if (['$Process$Src', '$Process$Select', '$Process$Retarget'].indexOf(attribute.name) > -1) {
+				//for (attribute in [for (a in node.attributes) a]) if (attribute.name.startsWith(Process)) {
 					
 					node.setAttribute(attribute.name.substring(1), Utilities.processAttribute( attribute.value, pair ) );
 					node.removeAttribute(attribute.name);
@@ -219,6 +223,32 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 				
 				if (!skipScope) node.setAttribute(ScopedData, haxe.Json.stringify(data));
 				
+			} else {
+				//var skipScope = false;
+				var modified = node.clone();
+
+				//if (skipScope = node.hasAttribute('$Process$Src')) {
+					if (forEach) {
+						appendChild(modified);
+						
+					} else {
+						modified | node;
+						
+					}
+
+					node.setAttribute(PendingRemoval, True);
+					node = modified;
+					
+				//}
+				
+				//for (attribute in [for (a in node.attributes) a]) if (['$Process$Src', '$Process$Select', '$Process$Retarget'].indexOf(attribute.name) > -1) {
+				for (attribute in [for (a in node.attributes) a]) if (attribute.name.startsWith(Process)) {
+					
+					node.setAttribute(attribute.name.substring(1), Utilities.processAttribute( attribute.value, pair ) );
+					node.removeAttribute(attribute.name);
+					
+				}
+
 			}
 			
 		}

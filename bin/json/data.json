@@ -4,5 +4,6 @@
         "first":"Bob",
         "last": "Smith"
     },
-    "files": ["/json/data1.json", "/json/data2.json"]
+    "files": ["/json/data1.json", "/json/data2.json"],
+    "svgs": ["rss", "skype", "spotify", "steam", "twitter"]
 }

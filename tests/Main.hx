@@ -22,7 +22,6 @@ using StringTools;
 }
 
 @:forward @:forwardStatics private abstract TestError(Pair<Phantom, Phantom>) from Pair<Phantom, Phantom> to Pair<Phantom, Phantom> {
-	
 	public inline function new(a, b) {
 		this = new Pair(a, b);
 	}
@@ -30,7 +29,17 @@ using StringTools;
 	@:to public function toString():String {
 		return 'Expected `${this.a.outerHTML}` but got `${this.b.outerHTML}`.';
 	}
+}
+
+@:forward @:forwardStatics private abstract AttributeError(Pair<Phantom, Phantom>) from Pair<Phantom, Phantom> to Pair<Phantom, Phantom> {
+	public inline function new(a, b) {
+		this = new Pair(a, b);
+	}
 	
+	@:to public function toString():String {
+		this.b.classList.add('error');
+		return 'Expected `${this.a.outerHTML}` but got `${this.b.outerHTML}`.';
+	}
 }
 
 class Main {
@@ -106,7 +115,7 @@ class Main {
 			
 			for (attribute in e.attributes) {
 				Assert.isTrue( o.hasAttribute(attribute.name) );
-				Assert.equals( attribute.value, o.getAttribute(attribute.name) );
+				Assert.equals( attribute.value, o.getAttribute(attribute.name), new AttributeError(e, o) );
 				
 			}
 			

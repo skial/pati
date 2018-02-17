@@ -32,34 +32,44 @@ class SvgObject extends ConvertTag<Array<Phantom>, Phantom> implements IProcesso
     }
 
     public override function attached():Void {
-        if (src != null) {
-            console.log( src );
-            var content:Surprise<Response, Error> = window.fetch( src );
-            content.handle( function(o) switch o {
-                case Success(r):
-                    Future.ofJsPromise( r.text() ).handle( function(o) switch o {
-                        case Success(s):
-                            var svg = document.createElementNS(SvgNamespace, Svg);
-                            svg.innerHTML = s;
-                            svg = svg.firstElementChild;
-                            console.log( svg );
-                            onDataAvailable( [svg] );
+        console.log( attributes, isCustomChild );
+        if (!isCustomChild) {
+            if (hasAttribute(Src)) {
+                console.log( this.outerHTML );
+                console.log( src );
+                var content:Surprise<Response, Error> = window.fetch( src );
+                content.handle( function(o) switch o {
+                    case Success(r):
+                        Future.ofJsPromise( r.text() ).handle( function(o) switch o {
+                            case Success(s):
+                                var svg = document.createElementNS(SvgNamespace, Svg);
+                                svg.innerHTML = s;
+                                svg = svg.firstElementChild;
+                                console.log( svg );
+                                onDataAvailable( [svg] );
 
-                        case Failure(e):
-                            console.log( e );
-                            callSuperAttached();
+                            case Failure(e):
+                                console.log( e );
+                                callSuperAttached();
 
-                    } );
+                        } );
 
-                case Failure(e):
-                    console.log( e );
-                    callSuperAttached();
+                    case Failure(e):
+                        console.log( e );
+                        callSuperAttached();
 
-            } );
+                } );
+
+            } else {
+                trace( 'src is null' );
+                trace( this.outerHTML );
+                console.log( window.document.body.outerHTML );
+                //callSuperAttached();
+
+            }
 
         } else {
-            callSuperAttached();
-
+            trace( this.outerHTML );
         }
 
     }
@@ -75,13 +85,15 @@ class SvgObject extends ConvertTag<Array<Phantom>, Phantom> implements IProcesso
 
         for (attribute in attributes) switch attribute.name {
             case _.startsWith(To) || ignoredAttributes.indexOf(_) > -1 => false if (!svg.hasAttribute(attribute.name)):
+                trace(attribute);
                 svg.setAttribute( attribute.name, attribute.value );
                 
             case _:
 
         }
 
-        parentElement.appendChild( svg );
+        // Inserts `svg` before `this` custom element, preserving DOM order.
+        (svg:Phantom) | this;
         
         super.attached();
     }
