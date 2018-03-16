@@ -163,19 +163,17 @@ class Component extends uhx.pati.TemplateElement {
 			result = hash.encode( [for (i in 0...stamp.length) stamp.charCodeAt(i)] );
 			
 		}
-		//console.log( this, uid );
+		
 		return result;
 	}
 	
 	// Custom event handlers
 	
 	public function onCustomChildAdded(?e:CustomEvent):Void {
-		//console.log( htmlFullname, e );
 		e.stopPropagation();
 	}
 	
 	public function onCustomChildFinished(?e:CustomEvent):Void {
-		//console.log( htmlFullname, e );
 		e.stopPropagation();
 		var children:Array<Element> = [for (node in querySelectorAll('[UID="${e.detail}"]')) cast node];
 		
@@ -185,7 +183,6 @@ class Component extends uhx.pati.TemplateElement {
 	}
 	
 	public function onCustomParentFinished(?e:CustomEvent):Void {
-		//console.log( htmlFullname, e );
 		e.stopPropagation();
 		
 		created();

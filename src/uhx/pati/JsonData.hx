@@ -175,7 +175,7 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 		var pair:Pair<Any, IProcessor<Any, Any>> = new Pair(data, (this:IProcessor<Any, Any>));
 		
 		if (CustomElement.knownComponents.indexOf(node.tagName.toLowerCase()) == -1) {
-			var modified = node.clone() | pair;
+			var modified = node.clone() * pair;
 			
 			if (forEach) {
 				appendChild(modified);
@@ -193,8 +193,6 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 			node.setAttribute(PendingRemoval, True);
 			
 		} else {
-			// TODO 
-			// HANDLE OTHER CUSTOM ELEMENTS - WTF
 			if (node.tagName.toLowerCase() == htmlFullname) {
 				var skipScope = false;
 				var modified = node.clone();
@@ -214,8 +212,6 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 				}
 				
 				for (attribute in [for (a in node.attributes) a]) if (['$Process$Src', '$Process$Select', '$Process$Retarget'].indexOf(attribute.name) > -1) {
-				//for (attribute in [for (a in node.attributes) a]) if (attribute.name.startsWith(Process)) {
-					
 					node.setAttribute(attribute.name.substring(1), Utilities.processAttribute( attribute.value, pair ) );
 					node.removeAttribute(attribute.name);
 					
@@ -224,26 +220,20 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
 				if (!skipScope) node.setAttribute(ScopedData, haxe.Json.stringify(data));
 				
 			} else {
-				//var skipScope = false;
 				var modified = node.clone();
 
-				//if (skipScope = node.hasAttribute('$Process$Src')) {
-					if (forEach) {
-						appendChild(modified);
-						
-					} else {
-						modified | node;
-						
-					}
+                if (forEach) {
+                    appendChild(modified);
+                    
+                } else {
+                    modified | node;
+                    
+                }
 
-					node.setAttribute(PendingRemoval, True);
-					node = modified;
-					
-				//}
-				
-				//for (attribute in [for (a in node.attributes) a]) if (['$Process$Src', '$Process$Select', '$Process$Retarget'].indexOf(attribute.name) > -1) {
+                node.setAttribute(PendingRemoval, True);
+                node = modified;
+
 				for (attribute in [for (a in node.attributes) a]) if (attribute.name.startsWith(Process)) {
-					
 					node.setAttribute(attribute.name.substring(1), Utilities.processAttribute( attribute.value, pair ) );
 					node.removeAttribute(attribute.name);
 					

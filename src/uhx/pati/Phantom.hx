@@ -41,7 +41,7 @@ using uhx.pati.Utilities;
 	
 	// operator overloads
 	
-	@:op(A|B) @:commutative
+	@:op(A * B)
 	public static #if !debug inline #end function convertNode<D, S>(node:Phantom, pair:Pair<D, IProcessor<D, S>>):Phantom {
 		var to = node.to;
 		var result = node;
@@ -58,7 +58,7 @@ using uhx.pati.Utilities;
 		return result;
 	}
 	
-	@:op(A|B) @:commutative
+	@:op(A | B)
 	public static #if !debug inline #end function insertBeforeElement(newNode:Phantom, oldNode:Element):Phantom {
 		var result = oldNode;
 		
@@ -71,7 +71,7 @@ using uhx.pati.Utilities;
 		return result;
 	}
 	
-	@:op(A|B) @:commutative
+	@:op(A | B)
 	public static #if !debug inline #end function insertBeforeNode(newNode:Phantom, oldNode:Node):Phantom {
 		return switch oldNode.nodeType {
 			case Node.ELEMENT_NODE, Node.DOCUMENT_NODE, Node.DOCUMENT_FRAGMENT_NODE:
