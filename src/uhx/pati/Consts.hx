@@ -1,5 +1,9 @@
 package uhx.pati;
 
+@:enum @:forward abstract HACK(String) from String to String {
+	var JSONDATA_HACK_CSE = 'activate-custom-elements';
+}
+
 @:enum @:forward abstract IntConsts(Int) from Int to Int {
 	var Left = '{'.code;
 	var Right = '}'.code;

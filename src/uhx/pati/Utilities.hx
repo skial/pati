@@ -136,15 +136,16 @@ class Utilities {
 	public static function clone(node:Phantom, deep:Bool = true):Phantom {
 		var tagName = node.nodeType == Node.ELEMENT_NODE ? node.tagName.toLowerCase() : '';
 		
-		if (node.nodeType == Node.ELEMENT_NODE /*&& CustomElement.knownComponents.indexOf( tagName = node.tagName.toLowerCase() ) > -1*/) {
+		if (node.nodeType == Node.ELEMENT_NODE) {
 			var clone:Phantom = window.document.createElement( tagName );
 			// Use `(g/s)etAttributeNode` instead of `(g/s)etAttribute` to avoid invalid value errors.
 			for (a in node.attributes) if (a.name != UID && a.name != PendingRemoval) clone.setAttributeNode(untyped node.getAttributeNode(a.name).cloneNode(true));
 			for (c in node.childNodes) clone.appendChild( c.clone( deep ) );
-			node = clone;
 			
+			node = clone;
+
 		} else {
-			node = node.cloneNode( deep );
+			node = node.cloneNode( true );
 			if (node.nodeType == Node.ELEMENT_NODE && node.hasAttribute(PendingRemoval)) node.removeAttribute(PendingRemoval);
 			
 		}

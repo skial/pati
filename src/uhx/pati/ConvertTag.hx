@@ -35,6 +35,10 @@ class ConvertTag<D, S> extends Staticise {
 			(node:Phantom).remove();
 			
 		}
+
+		// TODO remove once I've figure wtf is happening.
+		// NOW REMOVE THE HACKS
+		for (n in querySelectorAll('[$JSONDATA_HACK_CSE]')) (n:Phantom).removeAttribute(JSONDATA_HACK_CSE);
 		
 		if (parentElement != null) if (to != null) {
 			var replacement = window.document.createElement(to);

@@ -233,10 +233,23 @@ class JsonData extends ConvertTag<Any, Any> implements IProcessor<Any, Any> {
                 node.setAttribute(PendingRemoval, True);
                 node = modified;
 
+				var count = 0;
 				for (attribute in [for (a in node.attributes) a]) if (attribute.name.startsWith(Process)) {
 					node.setAttribute(attribute.name.substring(1), Utilities.processAttribute( attribute.value, pair ) );
 					node.removeAttribute(attribute.name);
+					count++;
 					
+				}
+
+				// THIS IS A HACK :O
+				if (count == 0) {
+					// TODO / BUG - hard to track. And I'm lost to wtf is going on...
+					// Setting an attribute with any name but only with `haxe.Json.stringify(data)`as the value works ?!?!?
+					// If you don't allow this, some custom elements that are cloned, don't get activated. This activates them
+					// somehow...
+					
+					node.setAttribute(JSONDATA_HACK_CSE, haxe.Json.stringify(data));
+
 				}
 
 			}
