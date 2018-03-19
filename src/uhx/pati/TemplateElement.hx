@@ -15,19 +15,25 @@ class TemplateElement extends CustomElement {
 	@:isVar public var owner(get, null):HTMLDocument;
 	@:isVar public var template(get, null):js.html.TemplateElement;
 	
-	public function new(?prefix:String, ?name:String, ?template:String) {
+	public function new(?prefix:String, ?name:String, ?template:js.html.TemplateElement) {
 		super(prefix, name);
 		
-		if (prefix != null && name != null) {
-			this.template = cast window.document.createElement(Template);
+		if (template == null) {
+			if (prefix == null) prefix = htmlPrefix;
+			if (name == null) name = htmlName;
 			
-			if (template != null) {
-				var tmp = window.document.createElement('div');
-				tmp.innerHTML = template;
-				for (node in tmp.childNodes) this.template.content.appendChild(node);
-				
+			var node = owner.querySelector('$Template[$Prefix="$prefix"][$Name="$name"]');
+			if (node != null) {
+				this.template = cast node;
+
+			} else {
+				this.template = cast window.document.createElement(Template);
+
 			}
 			
+		} else {
+			this.template = template;
+
 		}
 		
 	}

@@ -10,8 +10,8 @@ using uhx.pati.Utilities;
 
 class Staticise extends Component {
 	
-	public function new(?prefix:String, ?name:String) {
-		super(prefix, name);
+	public function new(?prefix:String, ?name:String, ?template:js.html.TemplateElement) {
+		super(prefix, name, template);
 	}
 	
 	//
