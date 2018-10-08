@@ -24,7 +24,7 @@ class DomData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	
 	public var each(get, null):Bool;
 	public var asText(get, null):Bool;
-	public var prepend(get, null):Bool;
+	public var affix(get, null):Bool;
 	public var select(get, null):Null<String>;
 	public var targetAction(get, null):TargetAction;
 	
@@ -47,7 +47,7 @@ class DomData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 	
 	public function onDataAvailable(data:Array<Phantom>):Void {
 		this.replaceAttributes( Utilities.processAttribute.bind(_, new tink.core.Pair(cast data, cast this) ) );
-		var attach = childNodes.length > 0 && prepend ? insertBefore.bind(_, firstChild) : appendChild;
+		var attach = childNodes.length > 0 && affix ? insertBefore.bind(_, firstChild) : appendChild;
 		var newNodes = switch targetAction {
 			case Copy:
 				data.map( Utilities.clone.bind(_, true) );
@@ -134,7 +134,7 @@ class DomData extends ConvertTag<Array<Phantom>, Phantom> implements IProcessor<
 		return hasAttribute(UseText);
 	}
 	
-	private #if !debug inline #end function get_prepend():Bool {
+	private #if !debug inline #end function get_affix():Bool {
 		return hasAttribute(Prepend) && !hasAttribute(Append);
 	}
 	

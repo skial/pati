@@ -15,7 +15,7 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 	
 	//
 	
-	public var prepend(get, null):Bool;
+	public var affix(get, null):Bool;
 	public var to(get, null):Null<String>;
 	
 	public function new(?prefix:String, ?name:String) {
@@ -56,7 +56,7 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 	public function onDataAvailable(data:Array<Phantom>):Void {
 		for (d in data) {
 			// Possible bug with `bind` on extern javascript methods?
-			var attach = prepend ? function(n) d.insertBefore(n, d.firstElementChild) : function(n) d.appendChild(n);
+			var attach = affix ? function(n) d.insertBefore(n, d.firstElementChild) : function(n) d.appendChild(n);
 			
 			for (node in [for (c in childNodes) c]) {
 				var cloned = node;
@@ -114,7 +114,7 @@ class MoveTags extends Staticise implements IProcessor<Array<Phantom>, Phantom> 
 		return result;
 	}
 	
-	private #if !debug inline #end function get_prepend():Bool {
+	private #if !debug inline #end function get_affix():Bool {
 		return hasAttribute(Prepend) && !hasAttribute(Append);
 	}
 	

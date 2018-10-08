@@ -140,7 +140,7 @@ class Utilities {
 			var clone:Phantom = window.document.createElement( tagName );
 			// Use `(g/s)etAttributeNode` instead of `(g/s)etAttribute` to avoid invalid value errors.
 			for (a in node.attributes) if (a.name != UID && a.name != PendingRemoval) clone.setAttributeNode(untyped node.getAttributeNode(a.name).cloneNode(true));
-			for (c in node.childNodes) clone.appendChild( c.clone( deep ) );
+			for (c in node.childNodes) clone.appendChild( (c:Phantom).clone( deep ) );
 			
 			node = clone;
 

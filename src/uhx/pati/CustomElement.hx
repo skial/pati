@@ -11,7 +11,12 @@ class CustomElement extends Element {
 	@:isVar public var htmlPrefix(get, null):String;
 	@:isVar public var htmlFullname(get, set):String;
 	
+	public function constructor() {
+		
+	}
+
 	public function new(?prefix:String, ?name:String) {
+		//super();
 		if (prefix != null) htmlPrefix = prefix;
 		if (name != null) htmlName = name;
 		
@@ -20,8 +25,11 @@ class CustomElement extends Element {
 			
 		}
 		
-		window.document.registerElement(htmlFullname, { prototype: this });
-		
+		//window.document.registerElement(htmlFullname, { prototype: this });
+		if (js.Syntax.code('{0}.customElements.get({1})', window, htmlFullname) == js.Lib.undefined) {
+			js.Syntax.code('{0}.customElements.define({1}, {2}, {3})', window, htmlFullname, new CustomElement(), {'extends':'div'});
+
+		}
 	}
 	
 	// Lifecycle callbacks for v0 of the Custom Elements spec.

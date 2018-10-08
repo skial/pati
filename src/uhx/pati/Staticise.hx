@@ -25,7 +25,7 @@ class Staticise extends Component {
 			var differences = this.diff( template );
 			
 			for (difference in differences) for (node in contents) if (!difference.contains(node)) {
-				var content:ContentElement = cast node;
+				var content:Element = cast node;
 				content.parentElement.insertBefore(difference, content);
 				content.setAttribute(PendingRemoval, True);
 				break;

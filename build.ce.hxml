@@ -1,0 +1,16 @@
+-cp src
+
+-lib utest
+-lib regle
+-lib jwenn
+-lib tink_core
+-lib tink_macro
+
+#-D runtime
+-D js_es=6
+-D analyzer-optimize
+#--no-traces
+-dce full
+
+-main uhx.pati.CE
+-js bin/js/spec.js
