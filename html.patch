@@ -1,0 +1,42 @@
+// @see http://old.haxe.org/manual/swc#patch-files for format.
+// TODO `@:html.attr` is a poor description imo for storing
+// a default value.
+
+// @:html.attr(/*Attribute Name*/"")
+// @:events(/*Dependant Attributes*/{}, /*Recommended Events*/[])
+// @:default(/*Dependant Attributes*/{})
+
+@:default js.html.Node.nodeValue
+@:default js.html.Node.textContent
+@:default js.html.DOMElement.innerText
+
+// <input />
+@:html.attr("value") js.html.InputElement
+@:events({type:"button"}, ["click"]) js.html.InputElement
+@:events({type:"checkbox"}, ["change", "input"]) js.html.InputElement
+@:events({type:"color"}, ["change", "input"]) js.html.InputElement
+@:events({type:"date"}, ["change", "input"]) js.html.InputElement
+@:events({type:"datetime-local"}, ["change", "input"]) js.html.InputElement
+@:events({type:"email"}, ["change", "input"]) js.html.InputElement
+@:events({type:"file"}, ["change", "input"]) js.html.InputElement
+@:events({type:"hidden"}, []) js.html.InputElement
+@:events({type:"image"}, []) js.html.InputElement
+@:events({type:"month"}, ["change", "input"]) js.html.InputElement
+@:events({type:"number"}, ["change", "input"]) js.html.InputElement
+@:events({type:"password"}, ["change", "input"]) js.html.InputElement
+@:events({type:"radio"}, ["change", "input"]) js.html.InputElement
+@:events({type:"range"}, ["change", "input"]) js.html.InputElement
+@:events({type:"reset"}, ["click"]) js.html.InputElement
+@:events({type:"search"}, ["change", "input"]) js.html.InputElement
+@:events({type:"submit"}, ["click"]) js.html.InputElement
+@:events({type:"tel"}, ["change", "input"]) js.html.InputElement
+@:events({type:"text"}, ["change", "input"]) js.html.InputElement
+@:events({type:"time"}, ["change", "input"]) js.html.InputElement
+@:events({type:"url"}, ["change", "input"]) js.html.InputElement
+@:events({type:"week"}, ["change", "input"]) js.html.InputElement
+
+@:default js.html.InputElement.value
+@:default({type:"range"}) js.html.InputElement.valueAsNumber
+@:default({type:"date"}) js.html.InputElement.valueAsDate
+@:default({type:"image"}) js.html.InputElement.src
+@:default({type:"file", multiple:_}) js.html.InputElement.files

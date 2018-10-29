@@ -1,8 +1,20 @@
 <html>
     <head>
         <script src="js/spec.js"></script>
+        <style>
+            [data-controller] {
+                background: red;
+                width: 20px;
+                height: 20px;
+            }
+        </style>
     </head>
     <body>
         <foo-bar></foo-bar>
+        <div data-controller="empty">
+            <span data-target="empty.bar" data-empty-bar="1"></span>
+            <input data-target="empty.foo" type="text" value="bob">
+            <button data-action="click->empty#sayHello">Say Hi!</button>
+        </div>
     </body>
 </html>

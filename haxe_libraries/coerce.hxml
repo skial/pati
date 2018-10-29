@@ -1,0 +1,4 @@
+-D coerce=0.0.0
+# @install: lix --silent download "https://gitlab.com/b.e/coerce/repository/archive.tar.gz?ref=3e2a3bad57979e7513569e16c6bdfd46bff61429&private_token=DQs63sY95y4hospeE8gy" into coerce/0.0.0/gitlab/3e2a3bad57979e7513569e16c6bdfd46bff61429
+#-cp ${HAXE_LIBCACHE}/coerce/0.0.0/gitlab/3e2a3bad57979e7513569e16c6bdfd46bff61429/src
+-cp ../../b.e/coerce/src
