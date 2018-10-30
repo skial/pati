@@ -1,9 +1,12 @@
 package uhx.pati.macro;
 
-import haxe.macro.Printer;
 import haxe.macro.Type;
 import haxe.macro.Expr;
+import uhx.mo.html.Lexer;
+import uhx.mo.html.Parser;
+import haxe.macro.Printer;
 import haxe.macro.Context;
+import uhx.pati.macro.PhantomElement.Exceptions.*;
 
 using StringTools;
 using haxe.macro.Context;
@@ -12,7 +15,7 @@ using tink.MacroApi;
 using uhx.pati.macro.HtmlDetails;
 using uhx.pati.macro.PhantomElement.MapHelper;
 
-enum abstract Metadata(String) from String {
+@:forward enum abstract Metadata(String) from String to String {
     var Target = ':target';
     var DataTarget = ':data.target';
     var Action = ':action';
@@ -24,32 +27,56 @@ enum abstract Metadata(String) from String {
     var DataAttribute = ':data.attribute';
 }
 
+abstract Exceptions(String->String) {
+    public static var ClassNotFound = _ -> 'Unable to resolve class.';
+    public static var MetaMissingParam = m -> '@$m can not be an empty string.';
+    public static var MissingEvent = m -> '@$m requires an event name. Eg `@$m("click")`.';
+    public static var UserDefinedAccess = m -> 'User defined (g/s)etters will have to get/set @$m manually.';
+    public static var NotSupported = m -> '@$m on methods are not supported.';
+}
+
+typedef Controller = {
+    var name:String;
+    var knownTargets:Map<String, {c:ComplexType, n:String, f:Field}>;
+    var knownActions:Map<String, Field>;
+    var knownAttributes:Map<String, {a:String, f:Field}>;
+    var actionExprs:Array<Expr>;
+    var targetElements:Array<Field>;
+    var removables:Array<String>;
+    var updatables:Map<String, Array<{?get:Expr, ?set:Expr, t:ComplexType, ?e:Expr, ?meta:haxe.macro.Expr.Metadata}>>;
+}
+
 class PhantomElement {
 
     #if (eval || macro)
+    private static var printer:Printer = new Printer();
     private static var stringType = (macro:String).toType().sure();
+    private static var controller:Controller = {
+        name: '',
+        knownTargets: new Map<String, {c:ComplexType, n:String, f:Field}>(),
+        knownActions: new Map<String, Field>(),
+        knownAttributes: new Map<String, {a:String, f:Field}>(),
+        actionExprs: [],
+        targetElements: [],
+        removables: [],
+        updatables: new Map<String, Array<{?get:Expr, ?set:Expr, t:ComplexType, ?e:Expr, ?meta:haxe.macro.Expr.Metadata}>>(),
+    };
     
     public static function build():Array<Field> {
         var type = Context.getLocalClass();
         var fields = Context.getBuildFields();
 
         if (type == null) {
-            Context.error('Unable to resolve class.', Context.currentPos());
+            Context.fatalError(ClassNotFound(''), Context.currentPos());
             return fields;
         }
 
-        var cls = type.get();
+        var html = '<html><head></head><body></body></html>';
+        var p = new Parser();
+        trace( p.toTokens(byte.ByteData.ofString(html), 'phantom') );
 
-        var controller = {
-            name: cls.name.toLowerCase(),
-            knownTargets: new Map<String, {c:ComplexType, n:String, f:Field}>(),
-            knownActions: new Map<String, Field>(),
-            knownAttributes: new Map<String, {a:String, f:Field}>(),
-            actionExprs: [],
-            targetElements: [],
-            removables: [],
-            updatables: new Map<String, Array<{?get:Expr, ?set:Expr, t:ComplexType, ?e:Expr, ?meta:haxe.macro.Expr.Metadata}>>(),
-        };
+        var cls = type.get();
+        controller.name = cls.name.toLowerCase();
 
         for (field in fields) {
             switch [field.name, field.kind] {
@@ -60,9 +87,11 @@ class PhantomElement {
                         : { c: null, n: null, f: null };
 
                     info.c = ctype;
+                    #if debug
                     /*var pm = (m:MetadataEntry) -> '@' + m.name + ' (' + m.params.map(p->p.toString()).join(', ') + ')';
                     trace( ctype.toType().sure().getMeta()[0].get().map( pm ) );
                     trace( ctype.toType().sure().getFields().sure().map( f -> f.name + ' ' + f.meta.get().map( pm )) );*/
+                    #end
                     controller.knownTargets.set(key, info);
                     controller.removables.push( field.name );
 
@@ -101,11 +130,11 @@ class PhantomElement {
                     if (meta.params.length > 0) {
                         key = meta.params[0].toString();
                         key = key.substr(1, key.length-2);
-                        if (key.length == 0) Context.fatalError('@$m can not be an empty string.', meta.pos);
+                        if (key.length == 0) Context.fatalError(MetaMissingParam(m), meta.pos);
 
                     } else {
                         // TODO try to determine event name from the type parameter. IE MouseEvent could be `click` etc. Offer suggestions based on info.
-                        Context.fatalError('@$m requires an event name. Eg `@$m("click")`.', meta.pos);
+                        Context.fatalError(MissingEvent(m), meta.pos);
 
                     }
 
@@ -158,11 +187,11 @@ class PhantomElement {
                             var defaults = data.defaultValues(true);
                             var typeMatches = defaults.filter( f -> f.type.unify(t) );
                             var stringMatches = defaults.filter( f -> f.type.unify(stringType) );
-                            /*#if debug
-                            trace( defaults.map( f -> f.name ) );
+                            #if debug
+                            /*trace( defaults.map( f -> f.name ) );
                             trace( c.toString(), typeMatches.map( f -> f.name ) );
-                            trace( stringMatches.map( f -> f.name ) );
-                            #end*/
+                            trace( stringMatches.map( f -> f.name ) );*/
+                            #end
 
                             var wrap = false;
                             var matchedField = typeMatches[0];
@@ -188,7 +217,7 @@ class PhantomElement {
             }
 
             #if debug
-            for (f in newFields) trace(new haxe.macro.Printer().printField(f));
+            for (f in newFields) trace(printer.printField(f));
             #end
             for (f in newFields) controller.targetElements.push( f );
         }
@@ -215,11 +244,11 @@ class PhantomElement {
 
                     // TODO setters can be modified. Getters can not, as far as I can see.
                     if (get == 'get' || set == 'set') {
-                        Context.fatalError('User defined (g/s)etters will have to get/set @:attr manually.', info.f.pos);
+                        Context.fatalError(UserDefinedAccess(':attr'), info.f.pos);
                     }
                     
                 case _:
-                    Context.fatalError('@:attr on methods are not supported.', info.f.pos);
+                    Context.fatalError(NotSupported(':attr'), info.f.pos);
             }
 
             var root = alsoTarget ?
@@ -274,6 +303,21 @@ class PhantomElement {
 
         }).fields) field.name => field];
 
+        processUpdatables(controller, fields);
+
+        for (field in controller.targetElements) map.set( field.name, field );
+
+        fields = [for (field in fields) if (controller.removables.indexOf(field.name) == -1) field];
+        for (field in fields) if (map.exists(field.name)) map.remove(field.name);
+        for (key in map.keys()) {
+            //trace(key);
+            fields.push( map.get(key) );
+        }
+
+        return fields;
+    }
+
+    private static function processUpdatables(controller:Controller, fields:Array<Field>):Void {
         // Merge changes into (g/s)etters.
         for (key in controller.updatables.keys()) {
             var changes = controller.updatables.get( key );
@@ -281,7 +325,7 @@ class PhantomElement {
 
             if (matches.length > 0) {
                 var field = matches[0];
-                var ctype = changes[0].t;   // Even though each entry store the type. Each entry is assumed to be the same.
+                var ctype = changes[0].t;   // Even though each entry stores the type, each entry is assumed to be the same type.
                 var getterName = 'get_${field.name}';
                 var getterExprs = changes.map( c -> c.get ).filter( c -> c != null );
                 var setterName = 'set_${field.name}';
@@ -309,7 +353,7 @@ class PhantomElement {
                         field.kind = FProp(getter == null ? 'default' : 'get', setter == null ? 'default' : 'set', ctype, null);
 
                     case _:
-                        throw 'This shouldnt have been reached.';
+                        Context.fatalError('This shouldnt have been reached, please report.', field.pos);
 
                 }
 
@@ -331,27 +375,16 @@ class PhantomElement {
                 if (setter != null) controller.targetElements.push( setter );
 
                 #if debug
-                var p = new Printer();
-                trace( p.printField( field ) );
-                if (getter != null) trace( p.printField( getter ) );
-                if (setter != null) trace( p.printField( setter ) );
+                trace( printer.printField( field ) );
+                if (getter != null) trace( printer.printField( getter ) );
+                if (setter != null) trace( printer.printField( setter ) );
                 #end
 
 
             }
         }
-
-        for (field in controller.targetElements) map.set( field.name, field );
-
-        fields = [for (field in fields) if (controller.removables.indexOf(field.name) == -1) field];
-        for (field in fields) if (map.exists(field.name)) map.remove(field.name);
-        for (key in map.keys()) {
-            //trace(key);
-            fields.push( map.get(key) );
-        }
-
-        return fields;
     }
+
     #end
     
 }

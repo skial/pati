@@ -9,7 +9,9 @@
 
 --macro patchTypes("html.patch")
 
-#-debug
+-debug
+-D eval-stack
+-D macro_debug
 -D error_stack
 #-D runtime
 -D js_es=6
