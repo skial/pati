@@ -12,8 +12,9 @@ using StringTools;
 using haxe.macro.Context;
 using tink.CoreApi;
 using tink.MacroApi;
-using uhx.pati.macro.HtmlDetails;
+using be.types.Html;
 using uhx.pati.macro.PhantomElement.MapHelper;
+using uhx.pati.macro.PhantomElement.FieldHelper;
 
 @:forward enum abstract Metadata(String) from String to String {
     var Target = ':target';
@@ -39,7 +40,7 @@ typedef Controller = {
     var name:String;
     var knownTargets:Map<String, {c:ComplexType, n:String, f:Field}>;
     var knownActions:Map<String, Field>;
-    var knownAttributes:Map<String, {a:String, f:Field}>;
+    var knownAttributes:Map<String, {a:String, f:Field, ?skip:{?get:Bool, ?set:Bool}}>;
     var actionExprs:Array<Expr>;
     var targetElements:Array<Field>;
     var removables:Array<String>;
@@ -55,14 +56,14 @@ class PhantomElement {
         name: '',
         knownTargets: new Map<String, {c:ComplexType, n:String, f:Field}>(),
         knownActions: new Map<String, Field>(),
-        knownAttributes: new Map<String, {a:String, f:Field}>(),
+        knownAttributes: new Map<String, {a:String, f:Field, ?skip:{?get:Bool, ?set:Bool}}>(),
         actionExprs: [],
         targetElements: [],
         removables: [],
         updatables: new Map<String, Array<{?get:Expr, ?set:Expr, t:ComplexType, ?e:Expr, ?meta:haxe.macro.Expr.Metadata}>>(),
     };
     
-    public static function build():Array<Field> {
+    public static function build():Array<Field> try {
         var type = Context.getLocalClass();
         var fields = Context.getBuildFields();
 
@@ -71,12 +72,9 @@ class PhantomElement {
             return fields;
         }
 
-        var html = '<html><head></head><body></body></html>';
-        var p = new Parser();
-        trace( p.toTokens(byte.ByteData.ofString(html), 'phantom') );
-
         var cls = type.get();
         controller.name = cls.name.toLowerCase();
+        trace( cls.meta.extract(':html')[0].params.map(p->p.toString()));
 
         for (field in fields) {
             switch [field.name, field.kind] {
@@ -101,7 +99,7 @@ class PhantomElement {
 
             for (meta in field.meta) switch meta.name {
                 case Attr, DataAttr, Attribute, DataAttribute if (!field.kind.match(FFun(_))):
-                    var attr = field.name;
+                    var attr = 'data-attr-${field.name}';
                     if (meta.params.length > 0) {
                         attr = meta.params[0].toString();
                         attr = attr.trim().substr(1, attr.length-2);
@@ -178,42 +176,79 @@ class PhantomElement {
                     return $i{name};
                 }
             }).fields;
-            
-            if (!controller.knownAttributes.exists(key)) switch ctype.toType() {
-                case Success(data):
+
+            switch ctype.toType() {
+                case Success(data = TInst(_.get() => _cls, params)) if (_cls.isExtern):
                     switch info.f.kind {
                         case FVar(c, _) | FProp(_, _, c, _): 
                             var t = c.toType().sure();
-                            var defaults = data.defaultValues(true);
-                            var typeMatches = defaults.filter( f -> f.type.unify(t) );
-                            var stringMatches = defaults.filter( f -> f.type.unify(stringType) );
-                            #if debug
-                            /*trace( defaults.map( f -> f.name ) );
-                            trace( c.toString(), typeMatches.map( f -> f.name ) );
-                            trace( stringMatches.map( f -> f.name ) );*/
-                            #end
+                            var getterWrap = false;
+                            var setterWrap = false;
+                            var getterField:ClassField = null;
+                            var setterField:ClassField = null;
+                            var attr = controller.knownAttributes.get( key );
 
-                            var wrap = false;
-                            var matchedField = typeMatches[0];
-                            if (wrap = matchedField == null) matchedField = stringMatches[0];
+                            if (attr != null) {
+                                getterField = switch data.getAttribute(attr.a, true) {
+                                    case Success(data): 
+                                        data[0];
+                                    case _: null;
+                                }
+                                setterField = switch data.setAttribute(attr.a, true) {
+                                    case Success(data): 
+                                        attr.skip = {get: true};
+                                        data[0];
+                                    case _: null;
+                                }
 
-                            var getterExpr = '${name}.${matchedField.name}'.resolve();
-                            if (wrap) getterExpr = macro (be.co.Coerce.value($getterExpr):$c);
+                                controller.knownAttributes.remove( key );
 
-                            var setterExpr = '${name}.${matchedField.name}'.resolve();
+                            }
 
+                            switch data.defaultValues(true) {
+                                case Success(defaults):
+                                    var typeMatches = defaults.filter( f -> f.type.unify(t) );
+                                    var stringMatches = defaults.filter( f -> f.type.unify(stringType) );
+                                    
+                                    if (getterField == null) getterField = typeMatches[0];
+                                    if (setterField == null) setterField = typeMatches[0];
+                                    
+                                    if (getterField == null) getterField = stringMatches[0];
+                                    if (setterField == null) setterField = stringMatches[0];
+
+                                case Failure(e): 
+                                    Context.warning(e.message, Context.currentPos());
+
+                            }
+
+                            getterWrap = !getterField.type.unify(t);
+                            setterWrap = !setterField.type.unify(t);
+
+                            var getterExpr = switch getterField.kind {
+                                case FMethod(_): '${name}.${getterField.name}'.resolve().call([macro $v{attr.a}]);
+                                case _: '${name}.${getterField.name}'.resolve();
+                            }
+                            if (getterWrap) getterExpr = macro (be.co.Coerce.value($getterExpr):$c);
+
+                            var setterExpr = switch setterField.kind {
+                                case FMethod(_): '${name}.${setterField.name}'.resolve().call([macro $v{attr.a}, setterWrap ? macro Std.string(v) : macro v]);
+                                case _: macro $e{'${name}.${setterField.name}'.resolve()} = $e{setterWrap ? macro Std.string(v) : macro v};
+                            }
                             controller.updatables.add( info.f.name, {
                                 t: c,
                                 get: getterExpr,
-                                set: macro $setterExpr = $e{wrap ? macro Std.string(v) : macro v},
+                                set: setterExpr,
                                 meta: [{ name:':isVar', params:[], pos:info.f.pos }]
                             } );
+                            
 
                         case _:
 
                     }
 
                 case _:
+
+
             }
 
             #if debug
@@ -223,6 +258,8 @@ class PhantomElement {
         }
 
         // @:data.attribute
+        // TODO controller.knownTargets now handles some known attributes, linked to that specific target being processed. Need to ignore below.
+        // TODO controller.knownTargets sets attr.skip, but the attribute is removed from the map. Remove code below that depends on attr.skip.
         for (key in controller.knownAttributes.keys()) {
             var info = controller.knownAttributes.get(key);
             var name = key;
@@ -254,10 +291,11 @@ class PhantomElement {
             var root = alsoTarget ?
                 'this.${name}Target'.resolve()
                 : macro this.root;
+            
             var coerce = if (ctype.toType().sure().unify(stringType)) {
                 macro $root.getAttribute($v{attr});
             } else {
-                macro be.co.Coerce.value($root.getAttribute($v{'data-${controller.name}-${attr}'}));
+                macro be.co.Coerce.value($root.getAttribute($v{attr}));
             }
             
             var extra = if (expr != null) {
@@ -270,12 +308,12 @@ class PhantomElement {
             
             controller.updatables.add( info.f.name, {
                 t: ctype,
-                get: macro {
+                get: (info.skip == null || info.skip != null && !info.skip.get) ? macro {
                     var r:$ctype = $coerce;
                     $extra;
                     r;
-                },
-                set: macro $root.setAttribute($v{'data-${controller.name}-${attr}'}, '' + v),
+                } : null,
+                set: (info.skip == null || info.skip != null && !info.skip.set) ? macro $root.setAttribute($v{attr}, '' + v) : null,
                 meta: [{ name:':isVar', params:[], pos:info.f.pos }]
             } );
 
@@ -315,6 +353,11 @@ class PhantomElement {
         }
 
         return fields;
+    } catch (e:Any) {
+        trace( haxe.CallStack.toString( haxe.CallStack.callStack() ) );
+        trace( haxe.CallStack.toString( haxe.CallStack.exceptionStack() ) );
+        trace( e );
+        return [];
     }
 
     private static function processUpdatables(controller:Controller, fields:Array<Field>):Void {
@@ -396,5 +439,10 @@ class MapHelper {
         entry.push(value);
         map.set(key, entry);
     }
+
+}
+
+class FieldHelper {
+
 
 }

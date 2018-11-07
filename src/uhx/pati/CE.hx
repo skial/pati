@@ -88,6 +88,27 @@ access. As attributes selectors are one of the slower ways to search for element
 **/
 
 @:data.controller('empty')
+/*@:html(
+<div data-controller="empty">
+    <span data-target="empty.bar" data-empty-bar="1"></span>
+    <input data-target="empty.foo" type="text" value="bob">
+    <button data-action="click->empty#sayHello">Say Hi!</button>
+</div>
+)*/
+/*@:html(
+<div data-controller='${this}'>
+    <span data-target='${this.bar}' data-attr-bar="1"></span>
+    <input data-target='${this.foo}' type="text" value="bob">
+    <button data-action='${this.sayHello}'>Say Hi!</button>
+</div>
+)*/
+@:html(
+<div :controller='${this}'>
+    <span :target='${this.bar}' :attr-bar="1"></span>
+    <input :target='${this.foo}' type="text" value="bob">
+    <button :action='${this.sayHello}'>Say Hi!</button>
+</div>
+)
 class Empty {
 
     public static function main() {
@@ -147,8 +168,8 @@ class Empty {
 
     /**
     Target names automatically get put into `observedAttributes`.
-    Target names automatically are `${classname}.${fieldname}`.
-    @:target(value) is an alternative value to match against. They become `${classname}.${value}`.
+    Target names automatically are `data-target-${fieldname}`.
+    @:target(value) is an alternative value to match against. They become `data-target-${value}`.
     All these names will be stored.
     ---
     Each @:target also generates a `this.${fieldname}Target` which points to the matched dom element.
@@ -163,9 +184,9 @@ class Empty {
         - :(other types) - everything else might be queued, event based etc.
     **/
 
-    @:data.attribute public var int:Int = 0;
+    @:data.attribute public var int:Int = 10;
     @:attr @:target public var bar:Int;
-    @:data.target public var foo:String;
+    @:data.target @:attr('value') public var foo:String;
     public var fooTarget:js.html.InputElement;
 
     @:target('fooy') public var thing:Float;
@@ -176,7 +197,7 @@ class Empty {
     @:attribute
     @:attr
     ---
-    Variables marked with @:attr will store/retrieve their values in `data-${classname}-${fieldname}`.
+    Variables marked with @:attr will store/retrieve their values in `data-attr-${fieldname}`.
     Allowing state to be preserved in html. By default, it will be stored on the root element.
     Even thought its using the data- attributes, (g/s)etAttribute is still faster than the dataset api.
     ---
@@ -204,9 +225,10 @@ class Empty {
     **/
 
     @:action('click') public function sayHello(event:js.html.MouseEvent):Void {
-        console.log( 'Hello, ${foo}' );
+        console.log( 'Hello, ' + foo );
+        foo = foo;
         console.log( bar, int );
-        int = bar;
+        int += bar;
         bar = bar * 2;
     }
 

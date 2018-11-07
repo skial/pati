@@ -1,0 +1,6 @@
+-D htmlinfo=0.0.0
+# @install: lix --silent download "https://gitlab.com/b.e/htmlinfo/repository/archive.tar.gz?ref=87968067d61f648aa24ac0ef6c66f3e929f3027b&private_token=DQs63sY95y4hospeE8gy" into htmlinfo/0.0.0/gitlab/87968067d61f648aa24ac0ef6c66f3e929f3027b
+#-cp ${HAXE_LIBCACHE}/htmlinfo/0.0.0/gitlab/87968067d61f648aa24ac0ef6c66f3e929f3027b/src
+
+-cp ../../b.e/htmlinfo/src
+--macro be.types.Html.enhance()

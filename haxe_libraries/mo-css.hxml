@@ -1,6 +1,5 @@
-# @install: lix --silent download "https://github.com/skial/mo-css/archive/f5a79ff601b0954c32c2c6b3d51735c4fd18b5f1.tar.gz" into mo-css/0.0.1-alpha/github/f5a79ff601b0954c32c2c6b3d51735c4fd18b5f1
 -D mo-css=0.0.1-alpha
--cp ${HAXESHIM_LIBCACHE}/mo-css/0.0.1-alpha/github/f5a79ff601b0954c32c2c6b3d51735c4fd18b5f1/src
-
+# @install: lix --silent download "gh://github.com/skial/mo-css#94206ccfb67dd12c3ed9a54dcd8ae57ead8c66b8" into mo-css/0.0.1-alpha/github/94206ccfb67dd12c3ed9a54dcd8ae57ead8c66b8
 -lib mo
 -lib utest
+-cp ${HAXE_LIBCACHE}/mo-css/0.0.1-alpha/github/94206ccfb67dd12c3ed9a54dcd8ae57ead8c66b8/src

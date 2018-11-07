@@ -6,11 +6,13 @@
 -lib tink_core
 -lib tink_macro
 -lib coerce
-
---macro patchTypes("html.patch")
+-lib mo
+-lib mo-html
+-lib htmlinfo
 
 -debug
 -D eval-stack
+-D macro-debug
 -D macro_debug
 -D error_stack
 #-D runtime

@@ -1,6 +1,5 @@
-# @install: lix --silent download "gh://github.com/skial/mo-html#3e6280179227ea0dd45dfc02f4319dafe01cb98e" into mo-html/0.0.1-alpha/github/3e6280179227ea0dd45dfc02f4319dafe01cb98e
 -D mo-html=0.0.1-alpha
--cp ${HAXE_LIBCACHE}/mo-html/0.0.1-alpha/github/3e6280179227ea0dd45dfc02f4319dafe01cb98e/src
-
+# @install: lix --silent download "gh://github.com/skial/mo-html#8dee08ddafacff19e80ec9c9bed1aedab2e60fd4" into mo-html/0.0.1-alpha/github/8dee08ddafacff19e80ec9c9bed1aedab2e60fd4
 -lib mo
 -lib utest
+-cp ${HAXE_LIBCACHE}/mo-html/0.0.1-alpha/github/8dee08ddafacff19e80ec9c9bed1aedab2e60fd4/src
