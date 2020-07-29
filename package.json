@@ -28,7 +28,7 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/skial/pati#readme",
   "dependencies": {
-    "electron": "^1.4.14",
+    "electron": "^9.1.2",
     "haxe-modular": "^0.1.4"
   }
 }
